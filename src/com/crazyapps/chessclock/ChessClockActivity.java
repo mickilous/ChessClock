@@ -2,44 +2,62 @@ package com.crazyapps.chessclock;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crazyapps.chessclock.CountDown.CountDownListener;
+
 public class ChessClockActivity extends Activity {
+
+	private final long	INITIAL_TIME	= 10000;
+
+	private CountDown	countDown1;
+	private CountDown	countDown2;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		((Button) findViewById(R.id.button1)).setOnClickListener(new OnClickListener() {
+
+		countDown1 = (CountDown) findViewById(R.id.countdown1);
+		countDown2 = (CountDown) findViewById(R.id.countdown2);
+
+		defCountDownBehavior(countDown1, countDown2);
+		defCountDownBehavior(countDown2, countDown1);
+
+		defButtonBehavior();
+	}
+
+	private void defCountDownBehavior(final CountDown mainCountDown, final CountDown adverseCountDown) {
+		mainCountDown.setTotal(INITIAL_TIME);
+
+		mainCountDown.setCountDownListener(new CountDownListener() {
 
 			public void onClick(View v) {
-				Toast.makeText(getApplicationContext(), "Starting", Toast.LENGTH_SHORT).show();
-				new CountDownTimer(5000, 1000) {
+				mainCountDown.pause();
+				adverseCountDown.start();
+			}
 
-					public void onTick(long millisUntilFinished) {
-						((TextView) findViewById(R.id.countdown1)).setText(format(millisUntilFinished));
-
-					}
-
-					public void onFinish() {
-						Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
-					}
-				}.start();
+			public void onFinish() {
+				toast("Done");
 			}
 		});
 	}
 
-	private CharSequence format(long millisUntilFinished) {
-		// TODO Auto-generated method stub
-		// return new SimpleDateFormat("hh:mm:ss").format(millisUntilFinished);
-		int h = (int) ((millisUntilFinished / 1000) / 3600);
-		int m = (int) (((millisUntilFinished / 1000) / 60) % 60);
-		int s = (int) ((millisUntilFinished / 1000) % 60);
-		return String.format("%d:%d:%d", h, m, s);
+	private void defButtonBehavior() {
+		((Button) findViewById(R.id.button1)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				toast("Todo");
+			}
+		});
 	}
+
+	private void toast(String msg) {
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+	}
+
 }

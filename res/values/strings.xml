@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World, ChessClockActivity!</string>
     <string name="app_name">ChessClock</string>
-
+    <string name="buttonReset">Reset</string>
+    <string name="buttonPause">Pause</string>
+        
 </resources>
