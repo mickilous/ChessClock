@@ -2,6 +2,8 @@ package com.crazyapps.chessclock;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,10 +13,15 @@ import com.crazyapps.chessclock.CountDown.CountDownListener;
 
 public class ChessClockActivity extends Activity {
 
-	private final long	INITIAL_TIME	= 10000;
+	private static final int	MENU_SETTINGS	= 1;
+	private static final int	MENU_RESET		= 2;
+	private static final int	MENU_ABOUT		= 3;
+	private static final int	MENU_EXIT		= 4;
 
-	private CountDown	countDown1;
-	private CountDown	countDown2;
+	private final long			INITIAL_TIME	= 10000;
+
+	private CountDown			countDown1;
+	private CountDown			countDown2;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -54,6 +61,34 @@ public class ChessClockActivity extends Activity {
 				toast("Todo");
 			}
 		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_SETTINGS, Menu.NONE, R.string.settings);
+		menu.add(0, MENU_RESET, Menu.NONE, R.string.reset);
+		menu.add(0, MENU_ABOUT, Menu.NONE, R.string.about);
+		menu.add(0, MENU_EXIT, Menu.NONE, R.string.exit);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_SETTINGS:
+				toast("Settings");
+				break;
+			case MENU_RESET:
+				toast("Reset");
+				break;
+			case MENU_ABOUT:
+				toast("www.crazy-apps.com");
+				break;
+			case MENU_EXIT:
+				finish();
+				break;
+		}
+		return true;
 	}
 
 	private void toast(String msg) {

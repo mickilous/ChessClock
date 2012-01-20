@@ -11,13 +11,14 @@
         android:layout_centerInParent="true"
         android:text="00:00:00"
         android:textColor="#00C2FF"
-        android:textSize="15pt" />
+        android:textSize="15pt"/>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/buttonReset" />
+        android:text="@string/start" />
+
 
     <com.crazyapps.chessclock.CountDown
         android:id="@+id/countdown2"
