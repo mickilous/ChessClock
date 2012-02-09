@@ -56,18 +56,21 @@ public class CountDown extends TextView {
 
 	public void start() {
 		launchTimer();
-		switchStatus();
+		setStatusOn();
+	}
+
+	public void stop() {
+		if (timer != null) {
+			timer.cancel();
+			setStatusOff();
+		}
 	}
 
 	public void pause() {
 		if (timer != null) {
 			timer.cancel();
-			switchStatus();
+			setStatusPaused();
 		}
-	}
-
-	public void resume() {
-		launchTimer();
 	}
 
 	private void launchTimer() {
@@ -154,21 +157,46 @@ public class CountDown extends TextView {
 		return inactiveGradientColors;
 	}
 
-	private void switchStatus() {
-		if (this.viewStatus == Status.ACTIVE) {
-			this.viewStatus = Status.INACTIVE;
-			setClickable(false);
-			setTextSize(25);
-			setTextColor(Color.GRAY);
-			setShadowLayer(12, 0, 0, Color.GRAY);
-		} else {
-			this.viewStatus = Status.ACTIVE;
-			setClickable(true);
-			setTextSize(35f);
-			setTextColor(Color.WHITE);
-			setShadowLayer(12, 0, 0, Color.CYAN);
-		}
+	private void setStatusOn() {
+		this.viewStatus = Status.ACTIVE;
+		setClickable(true);
+		setTextSize(35f);
+		setTextColor(Color.WHITE);
+		setShadowLayer(12, 0, 0, Color.CYAN);
 	}
+
+	private void setStatusOff() {
+		setStatusPaused();
+		setClickable(false);
+	}
+
+	private void setStatusPaused() {
+		setStatusInactive();
+		setClickable(true);
+	}
+
+	private void setStatusInactive() {
+		this.viewStatus = Status.INACTIVE;
+		setTextSize(25);
+		setTextColor(Color.GRAY);
+		setShadowLayer(12, 0, 0, Color.GRAY);
+	}
+
+	// private void switchStatus() {
+	// if (this.viewStatus == Status.ACTIVE) {
+	// this.viewStatus = Status.INACTIVE;
+	// setClickable(false);
+	// setTextSize(25);
+	// setTextColor(Color.GRAY);
+	// setShadowLayer(12, 0, 0, Color.GRAY);
+	// } else {
+	// this.viewStatus = Status.ACTIVE;
+	// setClickable(true);
+	// setTextSize(35f);
+	// setTextColor(Color.WHITE);
+	// setShadowLayer(12, 0, 0, Color.CYAN);
+	// }
+	// }
 
 	@Override
 	protected void onDraw(Canvas canvas) {
