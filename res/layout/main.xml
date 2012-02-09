@@ -2,30 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="center"
     android:orientation="vertical" >
 
-    <com.crazyapps.chessclock.CountDown
-        android:id="@+id/countdown1"
-        android:layout_width="320dip"
-        android:layout_height="120dip"
-        android:layout_centerInParent="true"
-        android:text="00:00:00"
-        android:textColor="#00C2FF"
-        android:textSize="15pt" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buttonReset" />
-
-    <com.crazyapps.chessclock.CountDown
+    <com.crazyapps.chessclock.ReversedCountDown
+        android:layout_gravity="center"
         android:id="@+id/countdown2"
-        android:layout_width="320dip"
-        android:layout_height="120dip"
-        android:layout_centerInParent="true"
-        android:text="00:00:00"
-        android:textColor="#00C2FF"
-        android:textSize="15pt" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:layout_weight="1.0" />
+        
+    <com.crazyapps.chessclock.CountDown
+        android:layout_gravity="center"
+        android:id="@+id/countdown1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:layout_weight="1.0" />
 
 </LinearLayout>
