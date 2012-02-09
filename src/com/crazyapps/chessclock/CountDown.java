@@ -80,7 +80,8 @@ public class CountDown extends TextView {
 	}
 
 	public void setTime(int time) {
-		this.total = time * 1000;
+		total = time * 1000;
+		setText(formatTime(total));
 	}
 
 }

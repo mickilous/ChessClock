@@ -11,6 +11,7 @@
     <string name="about">About</string>
     <string name="exit">Exit</string>
     <string name="done">Done</string>
+    <string name="pause">Pause</string>
         
     <!-- Preferences Label -->
     <string name="pref_mode_label">Choose a Mode</string>
