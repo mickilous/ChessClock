@@ -16,10 +16,10 @@
             android:name=".ChessClockActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity  android:name="com.crazyapps.chessclock.PreferencesActivity" />
     </application>
 
 </manifest>

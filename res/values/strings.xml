@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main label -->
     <string name="hello">Hello World, ChessClockActivity!</string>
     <string name="app_name">ChessClock</string>
-    <string name="buttonReset">Reset</string>
-    <string name="buttonPause">Pause</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="settings">Settings</string>
+    <string name="reset">Reset</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="done">Done</string>
         
+    <!-- Preferences Label -->
+    <string name="pref_mode_label">Choose a Mode</string>
+    <string-array name="pref_mode_entries">
+        <item>Normal</item>
+        <item>Fisher</item>
+        <item>Bronstein</item>
+    </string-array>        
+
 </resources>

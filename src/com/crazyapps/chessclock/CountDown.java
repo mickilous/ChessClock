@@ -143,8 +143,8 @@ public class CountDown extends TextView {
 		public void onFinish();
 	}
 
-	public void setTotal(long total) {
-		this.total = total;
+	public void setTime(int time) {
+		this.total = time * 1000;
 	}
 
 	private int[] getGradientColors() {
