@@ -37,7 +37,6 @@ public class ChessClockActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 		setContentView(R.layout.main);
 
 		v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -51,16 +50,12 @@ public class ChessClockActivity extends Activity {
 		defineCountDown(countDown2, countDown1);
 
 		initializeCountDowns();
+
 	}
 
 	private void initializeCountDowns() {
 		countDown1.setTime(prefs.getInt(C.TIME_P1, C.TIME_DEFAULT));
 		countDown2.setTime(prefs.getInt(C.TIME_P2, C.TIME_DEFAULT));
-	}
-
-	private void pause() {
-		countDown1.pause();
-		countDown2.pause();
 	}
 
 	private void defineCountDown(final CountDown mainCountDown, final CountDown adverseCountDown) {
@@ -81,19 +76,24 @@ public class ChessClockActivity extends Activity {
 	}
 
 	@Override
+	public boolean onMenuOpened(int featureId, Menu menu) {
+		pause();
+		toast("Pause");
+		return super.onMenuOpened(featureId, menu);
+	}
+
+	private void pause() {
+		countDown1.pause();
+		countDown2.pause();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, MENU_SETTINGS, Menu.NONE, R.string.settings);
 		menu.add(0, MENU_RESET, Menu.NONE, R.string.reset);
 		menu.add(0, MENU_ABOUT, Menu.NONE, R.string.about);
 		menu.add(0, MENU_EXIT, Menu.NONE, R.string.exit);
 		return true;
-	}
-
-	@Override
-	public boolean onMenuOpened(int featureId, Menu menu) {
-		pause();
-		toast("Pause");
-		return super.onMenuOpened(featureId, menu);
 	}
 
 	@Override
