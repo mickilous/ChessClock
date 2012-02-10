@@ -40,7 +40,7 @@ public class ChessClockActivity extends Activity {
 
 		v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-		prefs = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
+		prefs = getSharedPreferences(C.PREFERENCES, MODE_PRIVATE);
 
 		countDown1 = (CountDown) findViewById(R.id.countdown1);
 		countDown2 = (CountDown) findViewById(R.id.countdown2);
@@ -63,8 +63,8 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void initializeCountDowns() {
-		countDown1.setTime(prefs.getInt(Constants.TIME_P1, Constants.TIME_DEFAULT));
-		countDown2.setTime(prefs.getInt(Constants.TIME_P2, Constants.TIME_DEFAULT));
+		countDown1.setTime(prefs.getInt(C.TIME_P1, C.TIME_DEFAULT));
+		countDown2.setTime(prefs.getInt(C.TIME_P2, C.TIME_DEFAULT));
 	}
 
 	private void pause() {
@@ -122,7 +122,7 @@ public class ChessClockActivity extends Activity {
 				startActivityForResult(new Intent(this, PreferencesActivity.class), ACTIVITY_PREFS);
 				break;
 			case R.id.reset:
-				toast("Reset");
+				initializeCountDowns();
 				break;
 			case R.id.about:
 				toast("www.crazy-apps.com");

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TabHost;
 
 import com.crazyapps.chessclock.widget.TimePicker;
 
@@ -17,41 +18,63 @@ public class PreferencesActivity extends Activity {
 	private TimePicker			timeP1;
 	private TimePicker			timeP2;
 	private CheckBox			isTimeEquals;
+	private CheckBox			isSoundOnClick;
+	private CheckBox			isVibrateOnClick;
+	private CheckBox			isSoundOnGameOver;
+	private CheckBox			isVibrateOnGameOver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preferences);
 
-		prefs = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
+		prefs = getSharedPreferences(C.PREFERENCES, MODE_PRIVATE);
+
+		defineTabs();
 
 		defineButton();
 
-		defineCheckBox();
+		defineTimeCheckBox();
 
 		defineTimePicker1();
 		defineTimePicker2();
 
+		defineSoundsCheckBoxes();
+
+	}
+
+	private void defineSoundsCheckBoxes() {
+
+		isSoundOnClick = (CheckBox) findViewById(R.id.pref_sound_onclick);
+		isVibrateOnClick = (CheckBox) findViewById(R.id.pref_vibrate_onclick);
+		isSoundOnGameOver = (CheckBox) findViewById(R.id.pref_sound_ongameover);
+		isVibrateOnGameOver = (CheckBox) findViewById(R.id.pref_vibrate_ongameover);
+
+		isSoundOnClick.setChecked(prefs.getBoolean(C.SOUNDS_ON_CLICK, true));
+		isVibrateOnClick.setChecked(prefs.getBoolean(C.VIBRATE_ON_CLICK, true));
+		isSoundOnGameOver.setChecked(prefs.getBoolean(C.SOUNDS_ON_GAMEOVER, true));
+		isVibrateOnGameOver.setChecked(prefs.getBoolean(C.VIBRATE_ON_CLICK, true));
+
 	}
 
 	private void defineTimePicker1() {
-		timeP1 = initializeTimePicker(R.id.pref_time_p1, Constants.TIME_P1);
+		timeP1 = defineTimePicker(R.id.pref_time_p1, C.TIME_P1);
 	}
 
 	private void defineTimePicker2() {
-		timeP2 = initializeTimePicker(R.id.pref_time_p2, Constants.TIME_P2);
+		timeP2 = defineTimePicker(R.id.pref_time_p2, C.TIME_P2);
 		timeP2.setVisibility(visibilityIntValue(!isTimeEquals.isChecked()));
 	}
 
-	private TimePicker initializeTimePicker(int id, String pref) {
+	private TimePicker defineTimePicker(int id, String pref) {
 		TimePicker picker = (TimePicker) findViewById(id);
-		picker.setTime(prefs.getInt(pref, Constants.TIME_DEFAULT));
+		picker.setTime(prefs.getInt(pref, C.TIME_DEFAULT));
 		return picker;
 	}
 
-	private void defineCheckBox() {
+	private void defineTimeCheckBox() {
 		isTimeEquals = (CheckBox) findViewById(R.id.pref_time_equals);
-		isTimeEquals.setChecked(prefs.getBoolean(Constants.TIME_EQUALS, Constants.TIME_EQUALS_DEFAULT));
+		isTimeEquals.setChecked(prefs.getBoolean(C.TIME_EQUALS, C.TIME_EQUALS_DEFAULT));
 		isTimeEquals.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -66,16 +89,38 @@ public class PreferencesActivity extends Activity {
 
 			public void onClick(View v) {
 				Editor editor = prefs.edit();
-				editor.putInt(Constants.TIME_P1, timeP1.getTime());
-				if (isTimeEquals.isChecked())
-					editor.putInt(Constants.TIME_P2, timeP1.getTime());
-				else
-					editor.putInt(Constants.TIME_P2, timeP2.getTime());
-				editor.putBoolean(Constants.TIME_EQUALS, isTimeEquals.isChecked());
+				saveTime(editor);
+				saveSounds(editor);
 				editor.commit();
 				finish();
 			}
+
 		});
+	}
+
+	private void saveTime(Editor editor) {
+		editor.putInt(C.TIME_P1, timeP1.getTime());
+		editor.putInt(C.TIME_P2, isTimeEquals.isChecked() ? timeP1.getTime() : timeP2.getTime());
+		editor.putBoolean(C.TIME_EQUALS, isTimeEquals.isChecked());
+	}
+
+	private void saveSounds(Editor editor) {
+		editor.putBoolean(C.SOUNDS_ON_CLICK, isSoundOnClick.isChecked());
+		editor.putBoolean(C.VIBRATE_ON_CLICK, isVibrateOnClick.isChecked());
+		editor.putBoolean(C.SOUNDS_ON_GAMEOVER, isSoundOnGameOver.isChecked());
+		editor.putBoolean(C.VIBRATE_ON_CLICK, isVibrateOnGameOver.isChecked());
+	}
+
+	private void defineTabs() {
+		TabHost tabHost = (TabHost) findViewById(R.id.pref_tab_host);
+		tabHost.setup();
+
+		tabHost.addTab(tabHost.newTabSpec("Tralala_Time").setIndicator(getString(R.string.pref_tab_time))
+				.setContent(R.id.pref_tab_1));
+
+		tabHost.addTab(tabHost.newTabSpec("Tralala_Sounds").setIndicator(getString(R.string.pref_tab_sounds))
+				.setContent(R.id.pref_tab_2));
+
 	}
 
 	private int visibilityIntValue(boolean visible) {
