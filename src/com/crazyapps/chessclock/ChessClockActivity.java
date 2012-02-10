@@ -13,15 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.crazyapps.chessclock.CountDown.CountDownListener;
+import com.crazyapps.chessclock.widget.CountDown;
+import com.crazyapps.chessclock.widget.CountDown.CountDownListener;
+import com.crazyapps.chessclock.widget.CountDown.Status;
 
 public class ChessClockActivity extends Activity {
 
 	private static final int	ACTIVITY_PREFS	= 1;
-	private static final int	MENU_SETTINGS	= 1;
-	private static final int	MENU_RESET		= 2;
-	private static final int	MENU_ABOUT		= 3;
-	private static final int	MENU_EXIT		= 4;
 
 	private CountDown			countDown1;
 	private CountDown			countDown2;
@@ -49,8 +47,18 @@ public class ChessClockActivity extends Activity {
 		defineCountDown(countDown1, countDown2);
 		defineCountDown(countDown2, countDown1);
 
-		initializeCountDowns();
-
+		if (savedInstanceState != null) {
+			countDown1.setTime((Integer) savedInstanceState.getSerializable("countDown1_Time"));
+			countDown2.setTime((Integer) savedInstanceState.getSerializable("countDown2_Time"));
+			countDown1.setViewStatus((Status) savedInstanceState.getSerializable("countDown1_Status"));
+			countDown2.setViewStatus((Status) savedInstanceState.getSerializable("countDown2_Status"));
+			if ((Status) savedInstanceState.getSerializable("countDown1_Status") == Status.ACTIVE)
+				countDown1.start();
+			if ((Status) savedInstanceState.getSerializable("countDown2_Status") == Status.ACTIVE)
+				countDown2.start();
+		} else {
+			initializeCountDowns();
+		}
 	}
 
 	private void initializeCountDowns() {
@@ -75,6 +83,19 @@ public class ChessClockActivity extends Activity {
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
+	 */
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("countDown1_Time", countDown1.getTime());
+		outState.putSerializable("countDown2_Time", countDown2.getTime());
+		outState.putSerializable("countDown1_Status", countDown1.getViewStatus());
+		outState.putSerializable("countDown2_Status", countDown2.getViewStatus());
+	}
+
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		pause();
@@ -89,26 +110,23 @@ public class ChessClockActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, MENU_SETTINGS, Menu.NONE, R.string.settings);
-		menu.add(0, MENU_RESET, Menu.NONE, R.string.reset);
-		menu.add(0, MENU_ABOUT, Menu.NONE, R.string.about);
-		menu.add(0, MENU_EXIT, Menu.NONE, R.string.exit);
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_SETTINGS:
+			case R.id.settings:
 				startActivityForResult(new Intent(this, PreferencesActivity.class), ACTIVITY_PREFS);
 				break;
-			case MENU_RESET:
+			case R.id.reset:
 				initializeCountDowns();
 				break;
-			case MENU_ABOUT:
+			case R.id.about:
 				toast("www.crazy-apps.com");
 				break;
-			case MENU_EXIT:
+			case R.id.exit:
 				finish();
 				break;
 		}
