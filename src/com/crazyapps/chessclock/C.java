@@ -9,7 +9,10 @@ public final class C {
 	public static final int		TIME_DEFAULT		= 3600;
 	public static final String	TIME_EQUALS			= "time_equals";
 	public static final boolean	TIME_EQUALS_DEFAULT	= true;
-
+	public static final String	STATUS_P1				= "status_p1";
+	public static final String	STATUS_P2				= "status_p2";
+	
+	
 	public final static String	SOUNDS_ON_CLICK		= "sound_on_click";
 	public final static String	VIBRATE_ON_CLICK	= "vibrate_on_click";
 	public final static String	SOUNDS_ON_GAMEOVER	= "sound_on_gameover";

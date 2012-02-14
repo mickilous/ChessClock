@@ -116,25 +116,25 @@ public class CountDown extends TextView {
 	}
 
 	protected void setStatusOn() {
-		this.viewStatus = Status.ACTIVE;
+		viewStatus = Status.ACTIVE;
 		updateTextAttributes();
 		setClickable(true);
 	}
 
 	protected void setStatusOff() {
-		setStatusInactive();
+		viewStatus = Status.INACTIVE;
 		updateTextAttributes();
 		setClickable(false);
 	}
 
 	protected void setStatusPaused() {
-		setStatusInactive();
+		viewStatus = Status.INACTIVE;
 		updateTextAttributes();
 		setClickable(true);
 	}
 
 	protected void updateTextAttributes() {
-		switch (this.viewStatus) {
+		switch (viewStatus) {
 			case ACTIVE:
 				setTextSize(35f);
 				setTextColor(Color.WHITE);
@@ -146,10 +146,6 @@ public class CountDown extends TextView {
 				setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
 		}
-	}
-
-	protected void setStatusInactive() {
-		this.viewStatus = Status.INACTIVE;
 	}
 
 	@Override

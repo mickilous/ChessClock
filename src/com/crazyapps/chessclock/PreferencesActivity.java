@@ -88,14 +88,18 @@ public class PreferencesActivity extends Activity {
 		((Button) findViewById(R.id.pref_time_done)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Editor editor = prefs.edit();
-				saveTime(editor);
-				saveSounds(editor);
-				editor.commit();
+				save();
 				finish();
 			}
 
 		});
+	}
+
+	private void save() {
+		Editor editor = prefs.edit();
+		saveTime(editor);
+		saveSounds(editor);
+		editor.commit();
 	}
 
 	private void saveTime(Editor editor) {
