@@ -50,12 +50,6 @@
                         android:layout_height="wrap_content"
                         android:visibility="invisible" />
 
-                    <Spinner
-                        android:id="@+id/pref_time_mode"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/pref_mode_entries"
-                        android:prompt="@string/pref_mode_label" />
 
                     <Button
                         android:id="@+id/pref_time_done"
@@ -99,6 +93,27 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:text="@string/pref_vibrate_ongameover" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/pref_tab_3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:scrollbars="vertical" >
+                    <Spinner
+                        android:id="@+id/pref_time_mode"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/pref_mode_entries"
+                        android:prompt="@string/pref_mode_label" />
+                    
+                    <com.crazyapps.chessclock.widget.NumberPicker
+                        android:id="@+id/pref_mode_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    
+                    
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

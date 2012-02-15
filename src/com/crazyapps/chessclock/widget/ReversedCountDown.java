@@ -3,7 +3,6 @@
  */
 package com.crazyapps.chessclock.widget;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;

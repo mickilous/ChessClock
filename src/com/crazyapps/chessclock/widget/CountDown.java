@@ -12,11 +12,14 @@ import android.widget.TextView;
 
 public class CountDown extends TextView {
 
-	protected long				total;
-	protected final long		INTERVAL_TIME	= 1000;
-	protected CountDownTimer	timer;
-	protected CountDownListener	listener;
-	protected NumberFormat		formatter		= new DecimalFormat("##00");
+	private long				totalTime;
+	private long				preTime;
+	private boolean				appendPreTime;
+	private CountDownTimer		preTimer;
+	private CountDownTimer		timer;
+	private CountDownListener	listener;
+	private final long			INTERVAL_TIME	= 1000;
+	private final NumberFormat	formatter		= new DecimalFormat("##00");
 
 	public enum Status {
 		ACTIVE, INACTIVE;
@@ -45,41 +48,74 @@ public class CountDown extends TextView {
 	}
 
 	public CountDown(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView();
+		this(context, attrs, 0);
 	}
 
 	public CountDown(Context context) {
-		super(context);
-		initView();
+		this(context, null, 0);
+	}
+
+	protected void initView() {
+		updateTextAttributes();
 	}
 
 	public void start() {
+		System.out.println("start !!!!!");
 		launchTimer();
 		setStatusOn();
 	}
 
 	public void stop() {
-		if (timer != null) {
-			timer.cancel();
-			setStatusOff();
-		}
+		cancelTimer();
+		setStatusOff();
 	}
 
 	public void pause() {
+		cancelTimer();
+		setStatusPaused();
+	}
+
+	private void cancelTimer() {
 		if (timer != null) {
 			timer.cancel();
-			setStatusPaused();
 		}
 	}
 
-	protected void launchTimer() {
-		timer = new CountDownTimer(total, INTERVAL_TIME) {
+	private void launchTimer() {
+		if (preTime > 0)
+			launchPreTimer();
+		else
+			launchMainTimer();
+
+	}
+
+	private void launchPreTimer() {
+		timer = new CountDownTimer(preTime, INTERVAL_TIME) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
-				setText(formatTime(millisUntilFinished));
-				total = millisUntilFinished;
+				String time = formatTime(millisUntilFinished).toString();
+				System.out.println(time + " : tick !!!!!");
+				preTime = millisUntilFinished;
+			}
+
+			@Override
+			public void onFinish() {
+				launchMainTimer();
+			}
+
+		}.start();
+	}
+
+	protected void launchMainTimer() {
+		timer = new CountDownTimer(totalTime, INTERVAL_TIME) {
+
+			@Override
+			public void onTick(long millisUntilFinished) {
+				String time = formatTime(millisUntilFinished).toString();
+				System.out.println(time + " : tack !!!!!");
+				setText(time);
+				totalTime = millisUntilFinished;
 			}
 
 			@Override
@@ -88,10 +124,6 @@ public class CountDown extends TextView {
 				listener.onFinish();
 			}
 		}.start();
-	}
-
-	protected void initView() {
-		updateTextAttributes();
 	}
 
 	protected CharSequence formatTime(long millisUntilFinished) {
@@ -108,11 +140,6 @@ public class CountDown extends TextView {
 
 	public interface CountDownListener extends OnClickListener {
 		public void onFinish();
-	}
-
-	public void setTime(int time) {
-		total = time * 1000;
-		setText(formatTime(total));
 	}
 
 	protected void setStatusOn() {
@@ -153,10 +180,33 @@ public class CountDown extends TextView {
 		super.onDraw(canvas);
 	}
 
-	/**
-	 * @return
-	 */
-	public int getTime() {
-		return ((Long) total).intValue() / 1000;
+	public void setTime(int time) {
+		totalTime = milliSeconds(time);
+		setText(formatTime(totalTime));
 	}
+
+	public int getTime() {
+		return seconds(totalTime);
+	}
+
+	public int getPreTime() {
+		return seconds(preTime);
+	}
+
+	public void setPreTime(int preTime) {
+		this.preTime = milliSeconds(preTime);
+	}
+
+	public void setAppendPreTime(boolean appendPreTime) {
+		this.appendPreTime = appendPreTime;
+	}
+
+	private int seconds(long milliSeconds) {
+		return (int) (milliSeconds / 1000);
+	}
+
+	private long milliSeconds(int seconds) {
+		return seconds * 1000;
+	}
+
 }

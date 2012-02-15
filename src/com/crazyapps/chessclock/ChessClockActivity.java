@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.crazyapps.chessclock.manager.Notifier;
 import com.crazyapps.chessclock.widget.CountDown;
 import com.crazyapps.chessclock.widget.CountDown.CountDownListener;
 import com.crazyapps.chessclock.widget.CountDown.Status;
@@ -25,15 +26,9 @@ public class ChessClockActivity extends Activity {
 	private CountDown			countDown1;
 	private CountDown			countDown2;
 
-	private boolean				isSoundOnClick;
-	private boolean				isVibrateOnClick;
-	private boolean				isSoundOnGameOver;
-	private boolean				isVibrateOnGameOver;
-
 	private SharedPreferences	prefs;
-	private Vibrator			vibrator;
-	private MediaPlayer			clickMedia;
-	private MediaPlayer			gameOverMedia;
+
+	private Notifier			notifier;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -45,12 +40,15 @@ public class ChessClockActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.main);
 
-		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		clickMedia = MediaPlayer.create(this, R.raw.click);
-		gameOverMedia = MediaPlayer.create(this, R.raw.game_over);
+		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
 
-		prefs = getSharedPreferences(C.PREFERENCES, MODE_PRIVATE);
+		defineCountDowns(savedInstanceState);
 
+		initializeNotifier();
+
+	}
+
+	private void defineCountDowns(Bundle savedInstanceState) {
 		countDown1 = (CountDown) findViewById(R.id.countdown1);
 		countDown2 = (CountDown) findViewById(R.id.countdown2);
 
@@ -62,11 +60,11 @@ public class ChessClockActivity extends Activity {
 		} else {
 			defineCountDownsTime();
 		}
-
-		defineSoundsEvents();
 	}
 
 	private void defineCountDown(final CountDown mainCountDown, final CountDown adverseCountDown) {
+
+		mainCountDown.setAppendPreTime(isAppendPreTime());
 
 		mainCountDown.setCountDownListener(new CountDownListener() {
 
@@ -75,30 +73,21 @@ public class ChessClockActivity extends Activity {
 			}
 
 			public void onFinish() {
-				gameOver();
+				System.out.println("Game Over !!!!!");
+				notifier.gameOver();
 			}
 
 		});
 	}
 
+	private boolean isAppendPreTime() {
+		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
+	}
+
 	private void switchPlayer(final CountDown mainCountDown, final CountDown adverseCountDown) {
-		notifyClick();
+		notifier.click();
 		mainCountDown.stop();
 		adverseCountDown.start();
-	}
-
-	private void notifyClick() {
-		if (isVibrateOnClick)
-			vibrator.vibrate(100);
-		if (isSoundOnClick)
-			clickMedia.start();
-	}
-
-	private void gameOver() {
-		if (isVibrateOnGameOver)
-			vibrator.vibrate(300);
-		if (isSoundOnGameOver)
-			gameOverMedia.start();
 	}
 
 	private void pause() {
@@ -107,31 +96,39 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void defineCountDownsTime() {
-		countDown1.setTime(prefs.getInt(C.TIME_P1, C.TIME_DEFAULT));
-		countDown2.setTime(prefs.getInt(C.TIME_P2, C.TIME_DEFAULT));
+		countDown1.setTime(prefs.getInt(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
+		countDown1.setPreTime(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown2.setTime(prefs.getInt(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
+		countDown2.setPreTime(prefs.getInt(C.prefs.MODE_TIME, 0));
 	}
 
-	private void defineSoundsEvents() {
-		isSoundOnClick = prefs.getBoolean(C.SOUNDS_ON_CLICK, true);
-		isVibrateOnClick = prefs.getBoolean(C.VIBRATE_ON_CLICK, true);
-		isSoundOnGameOver = prefs.getBoolean(C.SOUNDS_ON_GAMEOVER, true);
-		isVibrateOnGameOver = prefs.getBoolean(C.VIBRATE_ON_CLICK, true);
+	private void initializeNotifier() {
+		notifier = new Notifier();
+		notifier.setVibrator((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
+		notifier.setClickMediaPlayer(MediaPlayer.create(this, R.raw.click));
+		notifier.setGameOverMediaPlayer(MediaPlayer.create(this, R.raw.game_over));
+		defineNotifier();
+	}
+
+	private void defineNotifier() {
+		notifier.setSoundOnClick(prefs.getBoolean(C.prefs.SOUNDS_ON_CLICK, true));
+		notifier.setVibrateOnClick(prefs.getBoolean(C.prefs.VIBRATE_ON_CLICK, true));
+		notifier.setSoundOnGameOver(prefs.getBoolean(C.prefs.SOUNDS_ON_GAMEOVER, true));
+		notifier.setVibrateOnGameOver(prefs.getBoolean(C.prefs.VIBRATE_ON_CLICK, true));
 	}
 
 	private void saveCountDownsState(Bundle outState) {
-		outState.putSerializable(C.TIME_P1, countDown1.getTime());
-		outState.putSerializable(C.TIME_P2, countDown2.getTime());
-		outState.putSerializable(C.STATUS_P1, countDown1.getViewStatus());
-		outState.putSerializable(C.STATUS_P2, countDown2.getViewStatus());
-		countDown1.stop();
-		countDown2.stop();
+		outState.putSerializable(C.prefs.TIME_P1, countDown1.getTime());
+		outState.putSerializable(C.prefs.TIME_P2, countDown2.getTime());
+		outState.putSerializable(C.prefs.STATUS_P1, countDown1.getViewStatus());
+		outState.putSerializable(C.prefs.STATUS_P2, countDown2.getViewStatus());
 	}
 
 	private void restoreCountDownsState(Bundle savedInstanceState) {
-		countDown1.setTime((Integer) savedInstanceState.getSerializable(C.TIME_P1));
-		countDown2.setTime((Integer) savedInstanceState.getSerializable(C.TIME_P2));
-		countDown1.setViewStatus((Status) savedInstanceState.getSerializable(C.STATUS_P1));
-		countDown2.setViewStatus((Status) savedInstanceState.getSerializable(C.STATUS_P2));
+		countDown1.setTime((Integer) savedInstanceState.getSerializable(C.prefs.TIME_P1));
+		countDown2.setTime((Integer) savedInstanceState.getSerializable(C.prefs.TIME_P2));
+		countDown1.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P1));
+		countDown2.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P2));
 		CountDown activeCountDown = countDown1.getViewStatus() == Status.ACTIVE ? countDown1 : countDown2;
 		activeCountDown.start();
 	}
@@ -178,7 +175,7 @@ public class ChessClockActivity extends Activity {
 		switch (requestCode) {
 			case ACTIVITY_PREFS:
 				defineCountDownsTime();
-				defineSoundsEvents();
+				defineNotifier();
 				break;
 
 		}
