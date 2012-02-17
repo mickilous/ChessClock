@@ -34,6 +34,12 @@ public class PreferencesActivity extends Activity {
 
 		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
 
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
 		defineTabs();
 
 		defineDoneButton();
@@ -47,6 +53,12 @@ public class PreferencesActivity extends Activity {
 
 		defineMode();
 
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		save();
 	}
 
 	private void defineMode() {
@@ -105,7 +117,6 @@ public class PreferencesActivity extends Activity {
 		((Button) findViewById(R.id.pref_time_done)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				save();
 				finish();
 			}
 
