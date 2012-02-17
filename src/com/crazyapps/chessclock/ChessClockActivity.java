@@ -1,9 +1,13 @@
 package com.crazyapps.chessclock;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +23,13 @@ import com.crazyapps.chessclock.widget.CountDown.Status;
 public class ChessClockActivity extends Activity {
 
 	private static final int	ACTIVITY_PREFS	= 1;
+	private final Notifier		notifier		= new Notifier(this);
 
 	private CountDown			countDown1;
 	private CountDown			countDown2;
 
 	private SharedPreferences	prefs;
-
-	private Notifier			notifier		= new Notifier(this);
+	private WakeLock			wakeLock;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -37,18 +41,24 @@ public class ChessClockActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.main);
 
+		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.FULL_WAKE_LOCK,
+				"DoNotDimScreen");
+
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
 		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
 
 		defineCountDowns(savedInstanceState);
 
+		defineNotifier();
 	}
 
 	private void defineCountDowns(Bundle savedInstanceState) {
 		countDown1 = (CountDown) findViewById(R.id.countdown1);
 		countDown2 = (CountDown) findViewById(R.id.countdown2);
 
-		defineCountDown(countDown1, countDown2);
-		defineCountDown(countDown2, countDown1);
+		defineCountDownBehavior(countDown1, countDown2);
+		defineCountDownBehavior(countDown2, countDown1);
 
 		if (savedInstanceState != null) {
 			restoreCountDownsState(savedInstanceState);
@@ -57,7 +67,7 @@ public class ChessClockActivity extends Activity {
 		}
 	}
 
-	private void defineCountDown(final CountDown mainCountDown, final CountDown adverseCountDown) {
+	private void defineCountDownBehavior(final CountDown mainCountDown, final CountDown adverseCountDown) {
 
 		mainCountDown.setCountDownListener(new CountDownListener() {
 
@@ -73,6 +83,16 @@ public class ChessClockActivity extends Activity {
 		});
 	}
 
+	private void defineCountDownsTime() {
+		boolean appendTimeIncrement = isAppendTimeIncrement();
+		countDown1.setTime(prefs.getInt(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
+		countDown1.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown1.setAppendTimeIncrement(appendTimeIncrement);
+		countDown2.setTime(prefs.getInt(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
+		countDown2.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown2.setAppendTimeIncrement(appendTimeIncrement);
+	}
+
 	private boolean isAppendTimeIncrement() {
 		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
 	}
@@ -86,16 +106,6 @@ public class ChessClockActivity extends Activity {
 	private void pause() {
 		countDown1.pause();
 		countDown2.pause();
-	}
-
-	private void defineCountDownsTime() {
-		boolean appendTimeIncrement = isAppendTimeIncrement();
-		countDown1.setTime(prefs.getInt(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
-		countDown1.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
-		countDown1.setAppendTimeIncrement(appendTimeIncrement);
-		countDown2.setTime(prefs.getInt(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
-		countDown2.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
-		countDown2.setAppendTimeIncrement(appendTimeIncrement);
 	}
 
 	private void defineNotifier() {
@@ -131,6 +141,7 @@ public class ChessClockActivity extends Activity {
 	@Override
 	protected void onPause() {
 		notifier.release();
+		wakeLock.release();
 		pause();
 		super.onPause();
 	}
@@ -138,6 +149,7 @@ public class ChessClockActivity extends Activity {
 	@Override
 	protected void onResume() {
 		notifier.aquire();
+		wakeLock.acquire();
 		super.onResume();
 	}
 
