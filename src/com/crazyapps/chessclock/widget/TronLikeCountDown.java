@@ -45,6 +45,12 @@ public class TronLikeCountDown extends CountDown {
 	}
 
 	@Override
+	protected void decrementPreTimer(long millisUntilFinished) {
+		super.decrementPreTimer(millisUntilFinished);
+		// TODO Implement progress bar inverted
+	}
+
+	@Override
 	protected void initView() {
 		setFocusable(true);
 		// Récupère les ressources externes

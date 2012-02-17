@@ -1,12 +1,9 @@
 package com.crazyapps.chessclock;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +25,7 @@ public class ChessClockActivity extends Activity {
 
 	private SharedPreferences	prefs;
 
-	private Notifier			notifier;
+	private Notifier			notifier		= new Notifier(this);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -43,8 +40,6 @@ public class ChessClockActivity extends Activity {
 		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
 
 		defineCountDowns(savedInstanceState);
-
-		initializeNotifier();
 
 	}
 
@@ -64,8 +59,6 @@ public class ChessClockActivity extends Activity {
 
 	private void defineCountDown(final CountDown mainCountDown, final CountDown adverseCountDown) {
 
-		mainCountDown.setAppendPreTime(isAppendPreTime());
-
 		mainCountDown.setCountDownListener(new CountDownListener() {
 
 			public void onClick(View view) {
@@ -80,7 +73,7 @@ public class ChessClockActivity extends Activity {
 		});
 	}
 
-	private boolean isAppendPreTime() {
+	private boolean isAppendTimeIncrement() {
 		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
 	}
 
@@ -96,18 +89,13 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void defineCountDownsTime() {
+		boolean appendTimeIncrement = isAppendTimeIncrement();
 		countDown1.setTime(prefs.getInt(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
-		countDown1.setPreTime(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown1.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown1.setAppendTimeIncrement(appendTimeIncrement);
 		countDown2.setTime(prefs.getInt(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
-		countDown2.setPreTime(prefs.getInt(C.prefs.MODE_TIME, 0));
-	}
-
-	private void initializeNotifier() {
-		notifier = new Notifier();
-		notifier.setVibrator((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
-		notifier.setClickMediaPlayer(MediaPlayer.create(this, R.raw.click));
-		notifier.setGameOverMediaPlayer(MediaPlayer.create(this, R.raw.game_over));
-		defineNotifier();
+		countDown2.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown2.setAppendTimeIncrement(appendTimeIncrement);
 	}
 
 	private void defineNotifier() {
@@ -122,6 +110,8 @@ public class ChessClockActivity extends Activity {
 		outState.putSerializable(C.prefs.TIME_P2, countDown2.getTime());
 		outState.putSerializable(C.prefs.STATUS_P1, countDown1.getViewStatus());
 		outState.putSerializable(C.prefs.STATUS_P2, countDown2.getViewStatus());
+		countDown1.terminate();
+		countDown2.terminate();
 	}
 
 	private void restoreCountDownsState(Bundle savedInstanceState) {
@@ -136,6 +126,19 @@ public class ChessClockActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		saveCountDownsState(outState);
+	}
+
+	@Override
+	protected void onPause() {
+		notifier.release();
+		pause();
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		notifier.aquire();
+		super.onResume();
 	}
 
 	@Override

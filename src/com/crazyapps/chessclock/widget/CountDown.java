@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 public class CountDown extends TextView {
 
-	private long				totalTime;
-	private long				preTime;
-	private boolean				appendPreTime;
-	private CountDownTimer		preTimer;
+	private long				timeTotal;
+	private long				timeIncrement;
+	private long				timeCredit;
+	private boolean				appendTimeIncrement;
 	private CountDownTimer		timer;
 	private CountDownListener	listener;
 	private final long			INTERVAL_TIME	= 1000;
@@ -27,17 +27,10 @@ public class CountDown extends TextView {
 
 	protected Status	viewStatus	= Status.INACTIVE;
 
-	/**
-	 * @return the viewStatus
-	 */
 	public Status getViewStatus() {
 		return viewStatus;
 	}
 
-	/**
-	 * @param viewStatus
-	 *            the viewStatus to set
-	 */
 	public void setViewStatus(Status viewStatus) {
 		this.viewStatus = viewStatus;
 	}
@@ -66,6 +59,19 @@ public class CountDown extends TextView {
 	}
 
 	public void stop() {
+		appendTimeIncrement();
+		terminate();
+	}
+
+	private void appendTimeIncrement() {
+		if (appendTimeIncrement) {
+			System.out.println("Appending !!!!!!!!!!!!!!!!");
+			timeTotal += timeCredit;
+			setText(formatTime(timeTotal));
+		}
+	}
+
+	public void terminate() {
 		cancelTimer();
 		setStatusOff();
 	}
@@ -82,7 +88,7 @@ public class CountDown extends TextView {
 	}
 
 	private void launchTimer() {
-		if (preTime > 0)
+		if (timeIncrement > 0)
 			launchPreTimer();
 		else
 			launchMainTimer();
@@ -90,32 +96,35 @@ public class CountDown extends TextView {
 	}
 
 	private void launchPreTimer() {
-		timer = new CountDownTimer(preTime, INTERVAL_TIME) {
+		timer = new CountDownTimer(timeIncrement, INTERVAL_TIME) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
-				String time = formatTime(millisUntilFinished).toString();
-				System.out.println(time + " : tick !!!!!");
-				preTime = millisUntilFinished;
+				timeCredit = millisUntilFinished;
+				decrementPreTimer(millisUntilFinished);
 			}
 
 			@Override
 			public void onFinish() {
+				timeCredit = 0;
 				launchMainTimer();
 			}
 
 		}.start();
 	}
 
+	protected void decrementPreTimer(long millisUntilFinished) {
+		String time = formatTime(millisUntilFinished).toString();
+		System.out.println(time + " : tick !!!!!");
+	}
+
 	protected void launchMainTimer() {
-		timer = new CountDownTimer(totalTime, INTERVAL_TIME) {
+		timer = new CountDownTimer(timeTotal, INTERVAL_TIME) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
-				String time = formatTime(millisUntilFinished).toString();
-				System.out.println(time + " : tack !!!!!");
-				setText(time);
-				totalTime = millisUntilFinished;
+				timeTotal = millisUntilFinished;
+				decrementTimer(millisUntilFinished);
 			}
 
 			@Override
@@ -124,6 +133,12 @@ public class CountDown extends TextView {
 				listener.onFinish();
 			}
 		}.start();
+	}
+
+	protected void decrementTimer(long millisUntilFinished) {
+		String time = formatTime(millisUntilFinished).toString();
+		setText(time);
+		System.out.println(time + " : tack !!!!!");
 	}
 
 	protected CharSequence formatTime(long millisUntilFinished) {
@@ -181,24 +196,24 @@ public class CountDown extends TextView {
 	}
 
 	public void setTime(int time) {
-		totalTime = milliSeconds(time);
-		setText(formatTime(totalTime));
+		timeTotal = milliSeconds(time);
+		setText(formatTime(timeTotal));
 	}
 
 	public int getTime() {
-		return seconds(totalTime);
+		return seconds(timeTotal);
 	}
 
-	public int getPreTime() {
-		return seconds(preTime);
+	public int getTimeIncrement() {
+		return seconds(timeIncrement);
 	}
 
-	public void setPreTime(int preTime) {
-		this.preTime = milliSeconds(preTime);
+	public void setTimeIncrement(int preTime) {
+		this.timeIncrement = milliSeconds(preTime);
 	}
 
-	public void setAppendPreTime(boolean appendPreTime) {
-		this.appendPreTime = appendPreTime;
+	public void setAppendTimeIncrement(boolean appendTimeIncrement) {
+		this.appendTimeIncrement = appendTimeIncrement;
 	}
 
 	private int seconds(long milliSeconds) {

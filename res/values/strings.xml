@@ -21,7 +21,7 @@
     <string name="pref_mode_label">Choose a Mode</string>
 
     <string-array name="pref_mode_entries">
-        <item>Normal</item>
+        <item>Sudden Death</item>
         <item>Fisher</item>
         <item>Bronstein</item>
     </string-array>
