@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/background"
     android:gravity="center"
     android:orientation="vertical" >
 
@@ -9,14 +10,14 @@
         android:id="@+id/countdown2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
-        android:layout_weight="1.0" />
-        
+        android:layout_weight="1.0"
+        android:gravity="center" />
+
     <com.crazyapps.chessclock.widget.TronLikeCountDown
         android:id="@+id/countdown1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
-        android:layout_weight="1.0" />
+        android:layout_weight="1.0"
+        android:gravity="center" />
 
 </LinearLayout>
