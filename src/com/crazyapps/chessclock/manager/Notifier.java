@@ -8,7 +8,7 @@ import com.crazyapps.chessclock.R;
 
 public class Notifier {
 
-	private final long[]	gameOverPattern	= { 0L, 1000L, 100L, 1000L, 100L, 1000L };
+	private final long[]	gameOverPattern	= { 0L, 700L, 100L, 700L, 100L, 700L };
 
 	private boolean			isSoundOnClick;
 	private boolean			isVibrateOnClick;

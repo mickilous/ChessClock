@@ -77,7 +77,7 @@ public class ChessClockActivity extends Activity {
 
 			public void onFinish() {
 				System.out.println("Game Over !!!!!");
-				notifier.gameOver();
+				gameOver();
 			}
 
 		});
@@ -108,6 +108,12 @@ public class ChessClockActivity extends Activity {
 		countDown2.pause();
 	}
 
+	private void gameOver() {
+		countDown1.stop();
+		countDown2.stop();
+		notifier.gameOver();
+	}
+
 	private void defineNotifier() {
 		notifier.setSoundOnClick(prefs.getBoolean(C.prefs.SOUNDS_ON_CLICK, true));
 		notifier.setVibrateOnClick(prefs.getBoolean(C.prefs.VIBRATE_ON_CLICK, true));
@@ -129,8 +135,18 @@ public class ChessClockActivity extends Activity {
 		countDown2.setTime((Integer) savedInstanceState.getSerializable(C.prefs.TIME_P2));
 		countDown1.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P1));
 		countDown2.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P2));
-		CountDown activeCountDown = countDown1.getViewStatus() == Status.ACTIVE ? countDown1 : countDown2;
-		activeCountDown.start();
+		startActiveCountDown();
+	}
+
+	private void startActiveCountDown() {
+		if (countDown1.getViewStatus() == Status.ACTIVE)
+			countDown1.start();
+		else if (countDown1.getViewStatus() == Status.ACTIVE)
+			countDown2.start();
+		else {
+			countDown1.setClickable(false);
+			countDown2.setClickable(false);
+		}
 	}
 
 	@Override

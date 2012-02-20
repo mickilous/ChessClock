@@ -58,9 +58,19 @@ public class CountDown extends TextView {
 		setStatusOn();
 	}
 
+	public void pause() {
+		cancelTimer();
+		setStatusPaused();
+	}
+
 	public void stop() {
 		appendTimeIncrement();
 		terminate();
+	}
+
+	public void terminate() {
+		cancelTimer();
+		setStatusOff();
 	}
 
 	private void appendTimeIncrement() {
@@ -69,16 +79,6 @@ public class CountDown extends TextView {
 			timeTotal += timeCredit;
 			setText(formatTime(timeTotal));
 		}
-	}
-
-	public void terminate() {
-		cancelTimer();
-		setStatusOff();
-	}
-
-	public void pause() {
-		cancelTimer();
-		setStatusPaused();
 	}
 
 	private void cancelTimer() {
@@ -92,7 +92,6 @@ public class CountDown extends TextView {
 			launchPreTimer();
 		else
 			launchMainTimer();
-
 	}
 
 	private void launchPreTimer() {
@@ -129,7 +128,8 @@ public class CountDown extends TextView {
 
 			@Override
 			public void onFinish() {
-				setText(formatTime(0L));
+				timeTotal = 0L;
+				decrementTimer(timeTotal);
 				listener.onFinish();
 			}
 		}.start();
