@@ -32,7 +32,7 @@ public class PreferencesActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preferences);
 
-		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
+		prefs = getSharedPreferences(C.prefs.STORE_NAME, MODE_PRIVATE);
 
 	}
 
@@ -68,7 +68,7 @@ public class PreferencesActivity extends Activity {
 		modeTimer.setRange(0, 3600);
 
 		mode.setSelection(prefs.getInt(C.prefs.MODE, 0));
-		modeTimer.setCurrent(prefs.getInt(C.prefs.MODE_TIME, 0));
+		modeTimer.setCurrent((int) (prefs.getLong(C.prefs.MODE_TIME, 0) / 1000));
 
 	}
 
@@ -97,7 +97,7 @@ public class PreferencesActivity extends Activity {
 
 	private TimePicker defineTimePicker(int id, String pref) {
 		TimePicker picker = (TimePicker) findViewById(id);
-		picker.setTime(prefs.getInt(pref, C.prefs.TIME_DEFAULT));
+		picker.setTime(prefs.getLong(pref, C.prefs.TIME_DEFAULT));
 		return picker;
 	}
 
@@ -134,12 +134,12 @@ public class PreferencesActivity extends Activity {
 	private void saveMode(Editor editor) {
 		int selMode = mode.getSelectedItemPosition();
 		editor.putInt(C.prefs.MODE, selMode);
-		editor.putInt(C.prefs.MODE_TIME, selMode != 0 ? modeTimer.getCurrent() : 0);
+		editor.putLong(C.prefs.MODE_TIME, selMode != 0 ? (long) (modeTimer.getCurrent() * 1000) : 0L);
 	}
 
 	private void saveTime(Editor editor) {
-		editor.putInt(C.prefs.TIME_P1, timeP1.getTime());
-		editor.putInt(C.prefs.TIME_P2, isTimeEquals.isChecked() ? timeP1.getTime() : timeP2.getTime());
+		editor.putLong(C.prefs.TIME_P1, timeP1.getTime());
+		editor.putLong(C.prefs.TIME_P2, isTimeEquals.isChecked() ? timeP1.getTime() : timeP2.getTime());
 		editor.putBoolean(C.prefs.TIME_EQUALS, isTimeEquals.isChecked());
 	}
 

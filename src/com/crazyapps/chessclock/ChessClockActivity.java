@@ -46,7 +46,7 @@ public class ChessClockActivity extends Activity {
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		prefs = getSharedPreferences(C.prefs.PREFERENCES, MODE_PRIVATE);
+		prefs = getSharedPreferences(C.prefs.STORE_NAME, MODE_PRIVATE);
 
 		defineCountDowns(savedInstanceState);
 
@@ -85,11 +85,11 @@ public class ChessClockActivity extends Activity {
 
 	private void defineCountDownsTime() {
 		boolean appendTimeIncrement = isAppendTimeIncrement();
-		countDown1.setTime(prefs.getInt(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
-		countDown1.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown1.setTime(prefs.getLong(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
+		countDown1.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
 		countDown1.setAppendTimeIncrement(appendTimeIncrement);
-		countDown2.setTime(prefs.getInt(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
-		countDown2.setTimeIncrement(prefs.getInt(C.prefs.MODE_TIME, 0));
+		countDown2.setTime(prefs.getLong(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
+		countDown2.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
 		countDown2.setAppendTimeIncrement(appendTimeIncrement);
 	}
 
@@ -131,8 +131,8 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void restoreCountDownsState(Bundle savedInstanceState) {
-		countDown1.setTime((Integer) savedInstanceState.getSerializable(C.prefs.TIME_P1));
-		countDown2.setTime((Integer) savedInstanceState.getSerializable(C.prefs.TIME_P2));
+		countDown1.setTime((Long) savedInstanceState.getSerializable(C.prefs.TIME_P1));
+		countDown2.setTime((Long) savedInstanceState.getSerializable(C.prefs.TIME_P2));
 		countDown1.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P1));
 		countDown2.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P2));
 		startActiveCountDown();

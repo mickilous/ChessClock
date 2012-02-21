@@ -31,13 +31,14 @@ public class TimePicker extends LinearLayout {
 		this(context, null);
 	}
 
-	public int getTime() {
-		return hoursPicker.getCurrent() * 3600 + minutesPicker.getCurrent() * 60 + secondsPicker.getCurrent();
+	public long getTime() {
+		return (hoursPicker.getCurrent() * 3600 + minutesPicker.getCurrent() * 60 + secondsPicker.getCurrent()) * 1000;
 	}
 
-	public void setTime(int time) {
-		hoursPicker.setCurrent(time / 3600);
-		minutesPicker.setCurrent((time / 60) % 60);
-		secondsPicker.setCurrent(time % 60);
+	public void setTime(long time) {
+		int timeInSeconds = (int) (time / 1000);
+		hoursPicker.setCurrent(timeInSeconds / 3600);
+		minutesPicker.setCurrent((timeInSeconds / 60) % 60);
+		secondsPicker.setCurrent(timeInSeconds % 60);
 	}
 }

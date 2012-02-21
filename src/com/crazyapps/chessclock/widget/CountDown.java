@@ -16,16 +16,18 @@ public class CountDown extends TextView {
 	private long				timeIncrement;
 	private long				timeCredit;
 	private boolean				appendTimeIncrement;
+
 	private CountDownTimer		timer;
 	private CountDownListener	listener;
+
+	protected Status			viewStatus		= Status.INACTIVE;
+
 	private final long			INTERVAL_TIME	= 1000;
 	private final NumberFormat	formatter		= new DecimalFormat("##00");
 
 	public enum Status {
 		ACTIVE, INACTIVE;
 	}
-
-	protected Status	viewStatus	= Status.INACTIVE;
 
 	public Status getViewStatus() {
 		return viewStatus;
@@ -170,9 +172,11 @@ public class CountDown extends TextView {
 	}
 
 	protected void setStatusPaused() {
-		viewStatus = Status.INACTIVE;
-		updateTextAttributes();
-		setClickable(true);
+		if (viewStatus != Status.INACTIVE) {
+			viewStatus = Status.INACTIVE;
+			updateTextAttributes();
+			setClickable(true);
+		}
 	}
 
 	protected void updateTextAttributes() {
@@ -195,33 +199,20 @@ public class CountDown extends TextView {
 		super.onDraw(canvas);
 	}
 
-	public void setTime(int time) {
-		timeTotal = milliSeconds(time);
+	public void setTime(long time) {
+		timeTotal = time;
 		setText(formatTime(timeTotal));
 	}
 
-	public int getTime() {
-		return seconds(timeTotal);
+	public long getTime() {
+		return timeTotal;
 	}
 
-	public int getTimeIncrement() {
-		return seconds(timeIncrement);
-	}
-
-	public void setTimeIncrement(int preTime) {
-		this.timeIncrement = milliSeconds(preTime);
+	public void setTimeIncrement(long timeIncrement) {
+		this.timeIncrement = timeIncrement;
 	}
 
 	public void setAppendTimeIncrement(boolean appendTimeIncrement) {
 		this.appendTimeIncrement = appendTimeIncrement;
 	}
-
-	private int seconds(long milliSeconds) {
-		return (int) (milliSeconds / 1000);
-	}
-
-	private long milliSeconds(int seconds) {
-		return seconds * 1000;
-	}
-
 }
