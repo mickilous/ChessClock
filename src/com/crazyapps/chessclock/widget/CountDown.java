@@ -15,7 +15,7 @@ public class CountDown extends TextView {
 	private long				timeTotal;
 	private long				timeIncrement;
 	private long				timeCredit;
-	private boolean				appendTimeIncrement;
+	private boolean				isAppendIncrementToTotal;
 
 	private CountDownTimer		timer;
 	private CountDownListener	listener;
@@ -67,16 +67,18 @@ public class CountDown extends TextView {
 
 	public void stop() {
 		appendTimeIncrement();
-		terminate();
-	}
-
-	public void terminate() {
 		cancelTimer();
 		setStatusOff();
+		// terminate();
 	}
 
+	// public void terminate() {
+	// cancelTimer();
+	// setStatusOff();
+	// }
+
 	private void appendTimeIncrement() {
-		if (appendTimeIncrement) {
+		if (isAppendIncrementToTotal) {
 			System.out.println("Appending !!!!!!!!!!!!!!!!");
 			timeTotal += timeCredit;
 			setText(formatTime(timeTotal));
@@ -97,7 +99,10 @@ public class CountDown extends TextView {
 	}
 
 	private void launchPreTimer() {
-		timer = new CountDownTimer(timeIncrement, INTERVAL_TIME) {
+		if (timeCredit == 0)
+			timeCredit = timeIncrement;
+
+		timer = new CountDownTimer(timeCredit, INTERVAL_TIME) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
@@ -172,11 +177,11 @@ public class CountDown extends TextView {
 	}
 
 	protected void setStatusPaused() {
-		if (viewStatus != Status.INACTIVE) {
-			viewStatus = Status.INACTIVE;
-			updateTextAttributes();
-			setClickable(true);
-		}
+		// if (viewStatus != Status.INACTIVE) {
+		viewStatus = Status.INACTIVE;
+		updateTextAttributes();
+		setClickable(true);
+		// }
 	}
 
 	protected void updateTextAttributes() {
@@ -213,6 +218,15 @@ public class CountDown extends TextView {
 	}
 
 	public void setAppendTimeIncrement(boolean appendTimeIncrement) {
-		this.appendTimeIncrement = appendTimeIncrement;
+		this.isAppendIncrementToTotal = appendTimeIncrement;
 	}
+
+	public long getTimeCredit() {
+		return timeCredit;
+	}
+
+	public void setTimeCredit(long timeCredit) {
+		this.timeCredit = timeCredit;
+	}
+
 }

@@ -6,6 +6,12 @@ public final class C {
 	public static final int	MODE_FISHER		= 1;
 	public static final int	MODE_BRONSTEIN	= 2;
 
+	public static final class state {
+		public static final String	GAME_STATUS		= "game_status";
+		public static final String	TIME_CREDIT_P1	= "time_credit_p1";
+		public static final String	TIME_CREDIT_P2	= "time_credit_p2";
+	}
+
 	public static final class prefs {
 		public static final String	STORE_NAME			= "preferences";
 
@@ -24,6 +30,7 @@ public final class C {
 
 		public static final String	MODE				= "mode";
 		public static final String	MODE_TIME			= "mode_time";
+
 	}
 
 }

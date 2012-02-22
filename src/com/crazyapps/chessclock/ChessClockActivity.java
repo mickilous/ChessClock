@@ -22,8 +22,14 @@ import com.crazyapps.chessclock.widget.CountDown.Status;
 
 public class ChessClockActivity extends Activity {
 
+	public enum GameStatus {
+		RUNNING, GAMEOVER;
+	}
+
 	private static final int	ACTIVITY_PREFS	= 1;
 	private final Notifier		notifier		= new Notifier(this);
+
+	private GameStatus			gameStatus;
 
 	private CountDown			countDown1;
 	private CountDown			countDown2;
@@ -51,11 +57,16 @@ public class ChessClockActivity extends Activity {
 		defineCountDowns(savedInstanceState);
 
 		defineNotifier();
+
 	}
 
 	private void defineCountDowns(Bundle savedInstanceState) {
 		countDown1 = (CountDown) findViewById(R.id.countdown1);
 		countDown2 = (CountDown) findViewById(R.id.countdown2);
+
+		boolean appendTimeIncrement = isAppendTimeIncrement();
+		countDown1.setAppendTimeIncrement(appendTimeIncrement);
+		countDown2.setAppendTimeIncrement(appendTimeIncrement);
 
 		defineCountDownBehavior(countDown1, countDown2);
 		defineCountDownBehavior(countDown2, countDown1);
@@ -63,12 +74,24 @@ public class ChessClockActivity extends Activity {
 		if (savedInstanceState != null) {
 			restoreCountDownsState(savedInstanceState);
 		} else {
-			defineCountDownsTime();
+			initializeCountDowns();
 		}
 	}
 
-	private void defineCountDownBehavior(final CountDown mainCountDown, final CountDown adverseCountDown) {
+	private boolean isAppendTimeIncrement() {
+		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
+	}
 
+	private void initializeCountDowns() {
+		gameStatus = GameStatus.RUNNING;
+
+		defineCountDownsTime();
+
+		countDown1.setClickable(true);
+		countDown2.setClickable(true);
+	}
+
+	private void defineCountDownBehavior(final CountDown mainCountDown, final CountDown adverseCountDown) {
 		mainCountDown.setCountDownListener(new CountDownListener() {
 
 			public void onClick(View view) {
@@ -84,17 +107,11 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void defineCountDownsTime() {
-		boolean appendTimeIncrement = isAppendTimeIncrement();
 		countDown1.setTime(prefs.getLong(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
-		countDown1.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
-		countDown1.setAppendTimeIncrement(appendTimeIncrement);
 		countDown2.setTime(prefs.getLong(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
-		countDown2.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
-		countDown2.setAppendTimeIncrement(appendTimeIncrement);
-	}
 
-	private boolean isAppendTimeIncrement() {
-		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
+		countDown1.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
+		countDown2.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
 	}
 
 	private void switchPlayer(final CountDown mainCountDown, final CountDown adverseCountDown) {
@@ -104,13 +121,18 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void pause() {
-		countDown1.pause();
-		countDown2.pause();
+		if (gameStatus.equals(GameStatus.RUNNING)) {
+			countDown1.pause();
+			countDown2.pause();
+		}
 	}
 
 	private void gameOver() {
+		gameStatus = GameStatus.GAMEOVER;
+
 		countDown1.stop();
 		countDown2.stop();
+
 		notifier.gameOver();
 	}
 
@@ -122,26 +144,45 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void saveCountDownsState(Bundle outState) {
+		outState.putSerializable(C.state.GAME_STATUS, gameStatus);
+
 		outState.putSerializable(C.prefs.TIME_P1, countDown1.getTime());
 		outState.putSerializable(C.prefs.TIME_P2, countDown2.getTime());
+
+		outState.putSerializable(C.state.TIME_CREDIT_P1, countDown1.getTimeCredit());
+		outState.putSerializable(C.state.TIME_CREDIT_P2, countDown2.getTimeCredit());
+
 		outState.putSerializable(C.prefs.STATUS_P1, countDown1.getViewStatus());
 		outState.putSerializable(C.prefs.STATUS_P2, countDown2.getViewStatus());
-		countDown1.terminate();
-		countDown2.terminate();
+
+		countDown1.pause();
+		countDown2.pause();
+
 	}
 
 	private void restoreCountDownsState(Bundle savedInstanceState) {
+
+		gameStatus = (GameStatus) savedInstanceState.getSerializable(C.state.GAME_STATUS);
+
 		countDown1.setTime((Long) savedInstanceState.getSerializable(C.prefs.TIME_P1));
 		countDown2.setTime((Long) savedInstanceState.getSerializable(C.prefs.TIME_P2));
+
+		countDown1.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
+		countDown2.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
+
+		countDown1.setTimeCredit((Long) savedInstanceState.getSerializable(C.state.TIME_CREDIT_P1));
+		countDown2.setTimeCredit((Long) savedInstanceState.getSerializable(C.state.TIME_CREDIT_P2));
+
 		countDown1.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P1));
 		countDown2.setViewStatus((Status) savedInstanceState.getSerializable(C.prefs.STATUS_P2));
+
 		startActiveCountDown();
 	}
 
 	private void startActiveCountDown() {
 		if (countDown1.getViewStatus() == Status.ACTIVE)
 			countDown1.start();
-		else if (countDown1.getViewStatus() == Status.ACTIVE)
+		else if (countDown2.getViewStatus() == Status.ACTIVE)
 			countDown2.start();
 		else {
 			countDown1.setClickable(false);
@@ -189,7 +230,7 @@ public class ChessClockActivity extends Activity {
 				startActivityForResult(new Intent(this, PreferencesActivity.class), ACTIVITY_PREFS);
 				break;
 			case R.id.reset:
-				defineCountDownsTime();
+				initializeCountDowns();
 				break;
 			case R.id.about:
 				toast("www.crazy-apps.com");
@@ -205,7 +246,7 @@ public class ChessClockActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 			case ACTIVITY_PREFS:
-				defineCountDownsTime();
+				initializeCountDowns();
 				defineNotifier();
 				break;
 
