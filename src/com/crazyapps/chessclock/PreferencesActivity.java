@@ -154,13 +154,17 @@ public class PreferencesActivity extends Activity {
 		TabHost tabHost = (TabHost) findViewById(R.id.pref_tab_host);
 		tabHost.setup();
 
-		tabHost.addTab(tabHost.newTabSpec("Tralala_Time").setIndicator(getString(R.string.pref_tab_time))
+		tabHost.addTab(tabHost.newTabSpec("tab_times")
+				.setIndicator(getString(R.string.pref_tab_times), getResources().getDrawable(R.drawable.ic_tab_times))
 				.setContent(R.id.pref_tab_1));
 
-		tabHost.addTab(tabHost.newTabSpec("Tralala_Sounds").setIndicator(getString(R.string.pref_tab_sound))
+		tabHost.addTab(tabHost
+				.newTabSpec("tab_sounds")
+				.setIndicator(getString(R.string.pref_tab_sounds), getResources().getDrawable(R.drawable.ic_tab_sounds))
 				.setContent(R.id.pref_tab_2));
 
-		tabHost.addTab(tabHost.newTabSpec("Tralala_Mode").setIndicator(getString(R.string.pref_tab_mode))
+		tabHost.addTab(tabHost.newTabSpec("tab_modes")
+				.setIndicator(getString(R.string.pref_tab_modes), getResources().getDrawable(R.drawable.ic_tab_modes))
 				.setContent(R.id.pref_tab_3));
 
 	}
