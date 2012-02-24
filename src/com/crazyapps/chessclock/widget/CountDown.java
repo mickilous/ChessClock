@@ -10,6 +10,8 @@ import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.crazyapps.chessclock.util.Xlog;
+
 public class CountDown extends TextView {
 
 	private long				timeTotal;
@@ -55,34 +57,31 @@ public class CountDown extends TextView {
 	}
 
 	public void start() {
-		System.out.println("start !!!!!");
+		Xlog.debug("Start Countdown");
 		launchTimer();
 		setStatusOn();
 	}
 
 	public void pause() {
+		Xlog.debug("Pause Countdown");
 		cancelTimer();
 		setStatusPaused();
 	}
 
 	public void stop() {
-		appendTimeIncrement();
+		Xlog.debug("Stop Countdown");
+		appendAndResetTimeIncrement();
 		cancelTimer();
 		setStatusOff();
-		// terminate();
 	}
 
-	// public void terminate() {
-	// cancelTimer();
-	// setStatusOff();
-	// }
-
-	private void appendTimeIncrement() {
+	private void appendAndResetTimeIncrement() {
 		if (isAppendIncrementToTotal) {
-			System.out.println("Appending !!!!!!!!!!!!!!!!");
+			Xlog.debug("Appending time : %d", timeCredit);
 			timeTotal += timeCredit;
 			setText(formatTime(timeTotal));
 		}
+		timeCredit = 0;
 	}
 
 	private void cancelTimer() {
@@ -121,7 +120,7 @@ public class CountDown extends TextView {
 
 	protected void decrementPreTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
-		System.out.println(time + " : tick !!!!!");
+		Xlog.debug("Tick : %s", time);
 	}
 
 	protected void launchMainTimer() {
@@ -145,7 +144,7 @@ public class CountDown extends TextView {
 	protected void decrementTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
 		setText(time);
-		System.out.println(time + " : tack !!!!!");
+		Xlog.debug("Tack : %s", time);
 	}
 
 	protected CharSequence formatTime(long millisUntilFinished) {

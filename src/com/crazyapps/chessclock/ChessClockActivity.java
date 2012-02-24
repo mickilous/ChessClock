@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.crazyapps.chessclock.manager.Notifier;
+import com.crazyapps.chessclock.util.Xlog;
 import com.crazyapps.chessclock.widget.CountDown;
 import com.crazyapps.chessclock.widget.CountDown.CountDownListener;
 import com.crazyapps.chessclock.widget.CountDown.Status;
@@ -99,7 +100,7 @@ public class ChessClockActivity extends Activity {
 			}
 
 			public void onFinish() {
-				System.out.println("Game Over !!!!!");
+				Xlog.debug("Game Over !!!!!");
 				gameOver();
 			}
 
