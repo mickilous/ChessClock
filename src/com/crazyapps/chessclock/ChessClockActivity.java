@@ -65,9 +65,9 @@ public class ChessClockActivity extends Activity {
 		countDown1 = (CountDown) findViewById(R.id.countdown1);
 		countDown2 = (CountDown) findViewById(R.id.countdown2);
 
-		boolean appendTimeIncrement = isAppendTimeIncrement();
-		countDown1.setAppendTimeIncrement(appendTimeIncrement);
-		countDown2.setAppendTimeIncrement(appendTimeIncrement);
+		// boolean appendTimeIncrement = isAppendTimeIncrement();
+		// countDown1.setAppendTimeIncrement(appendTimeIncrement);
+		// countDown2.setAppendTimeIncrement(appendTimeIncrement);
 
 		defineCountDownBehavior(countDown1, countDown2);
 		defineCountDownBehavior(countDown2, countDown1);
@@ -75,15 +75,11 @@ public class ChessClockActivity extends Activity {
 		if (savedInstanceState != null) {
 			restoreCountDownsState(savedInstanceState);
 		} else {
-			initializeCountDowns();
+			initializeCountDownsState();
 		}
 	}
 
-	private boolean isAppendTimeIncrement() {
-		return (prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER) ? true : false;
-	}
-
-	private void initializeCountDowns() {
+	private void initializeCountDownsState() {
 		gameStatus = GameStatus.RUNNING;
 
 		defineCountDownsTime();
@@ -108,6 +104,10 @@ public class ChessClockActivity extends Activity {
 	}
 
 	private void defineCountDownsTime() {
+		boolean appendTimeIncrement = prefs.getInt(C.prefs.MODE, 0) == C.MODE_FISHER ? true : false;
+		countDown1.setAppendTimeIncrement(appendTimeIncrement);
+		countDown2.setAppendTimeIncrement(appendTimeIncrement);
+
 		countDown1.setTime(prefs.getLong(C.prefs.TIME_P1, C.prefs.TIME_DEFAULT));
 		countDown2.setTime(prefs.getLong(C.prefs.TIME_P2, C.prefs.TIME_DEFAULT));
 
@@ -158,7 +158,6 @@ public class ChessClockActivity extends Activity {
 
 		countDown1.pause();
 		countDown2.pause();
-
 	}
 
 	private void restoreCountDownsState(Bundle savedInstanceState) {
@@ -231,7 +230,7 @@ public class ChessClockActivity extends Activity {
 				startActivityForResult(new Intent(this, PreferencesActivity.class), ACTIVITY_PREFS);
 				break;
 			case R.id.reset:
-				initializeCountDowns();
+				initializeCountDownsState();
 				break;
 			case R.id.about:
 				toast("www.crazy-apps.com");
@@ -247,7 +246,7 @@ public class ChessClockActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 			case ACTIVITY_PREFS:
-				initializeCountDowns();
+				initializeCountDownsState();
 				defineNotifier();
 				break;
 

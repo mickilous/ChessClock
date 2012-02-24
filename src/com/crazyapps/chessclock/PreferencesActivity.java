@@ -131,12 +131,6 @@ public class PreferencesActivity extends Activity {
 		editor.commit();
 	}
 
-	private void saveMode(Editor editor) {
-		int selMode = mode.getSelectedItemPosition();
-		editor.putInt(C.prefs.MODE, selMode);
-		editor.putLong(C.prefs.MODE_TIME, selMode != 0 ? (long) (modeTimer.getCurrent() * 1000) : 0L);
-	}
-
 	private void saveTime(Editor editor) {
 		editor.putLong(C.prefs.TIME_P1, timeP1.getTime());
 		editor.putLong(C.prefs.TIME_P2, isTimeEquals.isChecked() ? timeP1.getTime() : timeP2.getTime());
@@ -148,6 +142,12 @@ public class PreferencesActivity extends Activity {
 		editor.putBoolean(C.prefs.VIBRATE_ON_CLICK, isVibrateOnClick.isChecked());
 		editor.putBoolean(C.prefs.SOUNDS_ON_GAMEOVER, isSoundOnGameOver.isChecked());
 		editor.putBoolean(C.prefs.VIBRATE_ON_CLICK, isVibrateOnGameOver.isChecked());
+	}
+
+	private void saveMode(Editor editor) {
+		int selMode = mode.getSelectedItemPosition();
+		editor.putInt(C.prefs.MODE, selMode);
+		editor.putLong(C.prefs.MODE_TIME, selMode != 0 ? (long) (modeTimer.getCurrent() * 1000) : 0L);
 	}
 
 	private void defineTabs() {
