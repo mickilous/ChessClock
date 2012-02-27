@@ -113,6 +113,9 @@ public class ChessClockActivity extends Activity {
 
 		countDown1.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
 		countDown2.setTimeIncrement(prefs.getLong(C.prefs.MODE_TIME, 0));
+
+		countDown1.setTimeCredit(0L);
+		countDown2.setTimeCredit(0L);
 	}
 
 	private void switchPlayer(final CountDown mainCountDown, final CountDown adverseCountDown) {
