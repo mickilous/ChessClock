@@ -6,12 +6,18 @@ public final class C {
 	public static final int	MODE_FISHER		= 1;
 	public static final int	MODE_BRONSTEIN	= 2;
 
+	public static final class state {
+		public static final String	GAME_STATUS		= "game_status";
+		public static final String	TIME_CREDIT_P1	= "time_credit_p1";
+		public static final String	TIME_CREDIT_P2	= "time_credit_p2";
+	}
+
 	public static final class prefs {
-		public static final String	PREFERENCES			= "preferences";
+		public static final String	STORE_NAME			= "preferences";
 
 		public static final String	TIME_P1				= "time_p1";
 		public static final String	TIME_P2				= "time_p2";
-		public static final int		TIME_DEFAULT		= 3600;
+		public static final int		TIME_DEFAULT		= 3600000;
 		public static final String	TIME_EQUALS			= "time_equals";
 		public static final boolean	TIME_EQUALS_DEFAULT	= true;
 		public static final String	STATUS_P1			= "status_p1";
@@ -24,6 +30,7 @@ public final class C {
 
 		public static final String	MODE				= "mode";
 		public static final String	MODE_TIME			= "mode_time";
+
 	}
 
 }

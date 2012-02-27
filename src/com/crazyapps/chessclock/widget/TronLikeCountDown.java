@@ -31,7 +31,10 @@ public class TronLikeCountDown extends CountDown {
 
 	private Paint			circlePaint;
 	private Paint			pgb;
-	private Paint			preTimerPaint;
+	private Paint			timerPaint;
+
+	private Paint			pulsationPaint;
+
 	private Paint			backgroundPaint;
 	private Paint			bonusText;
 
@@ -71,10 +74,15 @@ public class TronLikeCountDown extends CountDown {
 		circlePaint.setStrokeWidth(1);
 		circlePaint.setStyle(Paint.Style.STROKE);
 
-		preTimerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		preTimerPaint.setColor(Color.WHITE);
-		preTimerPaint.setStyle(Paint.Style.STROKE);
-		preTimerPaint.setStrokeWidth(2);
+		timerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		timerPaint.setColor(Color.WHITE);
+		timerPaint.setStyle(Paint.Style.STROKE);
+		timerPaint.setStrokeWidth(2);
+
+		pulsationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		pulsationPaint.setColor(Color.WHITE);
+		pulsationPaint.setStyle(Paint.Style.STROKE);
+		pulsationPaint.setStrokeWidth(4);
 
 		backgroundPaint = new Paint();
 		backgroundPaint.setARGB(120, 0, 0, 0);
@@ -142,10 +150,15 @@ public class TronLikeCountDown extends CountDown {
 
 		if (timeIncrement > 0 && timeCredit > 0) {
 			float angle = getAngle(timeIncrement, timeCredit);
-			canvas.drawArc(preTimerBox, -90 + angle / 2, angle / 2, false, preTimerPaint);
+			canvas.drawArc(preTimerBox, -90 + angle / 2, angle, false, timerPaint);
 			bonusText.setColor(getAlphaBasedOnTime(Color.WHITE));
 			bonusText.setShadowLayer(12, 0, 0, getAlphaBasedOnTime(Color.CYAN));
 			canvas.drawText(getTimeWithSeparator(timeCredit), center.x, center.y + getTextSize() + 3, bonusText);
+		} else {
+			if (viewStatus.equals(Status.ACTIVE)) {
+				canvas.drawArc(preTimerBox, 90 + getAngle(baseTime, timeTotal) / 2, getAngle(baseTime, timeTotal),
+						false, timerPaint);
+			}
 		}
 		canvas.save();
 	}

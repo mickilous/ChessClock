@@ -10,22 +10,29 @@ import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.crazyapps.chessclock.R;
+import com.crazyapps.chessclock.util.Xlog;
+
 public class CountDown extends TextView {
 
-	private long				timeTotal;
+	protected long				baseTime;
+	protected long				timeTotal;
+
 	protected long				timeIncrement;
 	protected long				timeCredit;
-	private boolean				appendTimeIncrement;
+	private boolean				isAppendIncrementToTotal;
+
 	private CountDownTimer		timer;
 	private CountDownListener	listener;
-	private final long			INTERVAL_TIME	= 1000;
+
+	protected Status			viewStatus		= Status.INACTIVE;
+
+	private final long			INTERVAL_TIME	= 1;
 	private final NumberFormat	formatter		= new DecimalFormat("##00");
 
 	public enum Status {
 		ACTIVE, INACTIVE;
 	}
-
-	protected Status	viewStatus	= Status.INACTIVE;
 
 	public Status getViewStatus() {
 		return viewStatus;
@@ -49,38 +56,35 @@ public class CountDown extends TextView {
 	}
 
 	protected void initView() {
-
 		updateTextAttributes();
 	}
 
 	public void start() {
-		System.out.println("start !!!!!");
+		Xlog.debug("Start Countdown");
 		launchTimer();
 		setStatusOn();
 	}
 
+	public void pause() {
+		Xlog.debug("Pause Countdown");
+		cancelTimer();
+		setStatusPaused();
+	}
+
 	public void stop() {
-		appendTimeIncrement();
-		terminate();
-	}
-
-	private void appendTimeIncrement() {
-		if (appendTimeIncrement) {
-			System.out.println("Appending !!!!!!!!!!!!!!!!");
-			timeTotal += timeCredit;
-			timeCredit = 0;
-			setText(formatTime(timeTotal));
-		}
-	}
-
-	public void terminate() {
+		Xlog.debug("Stop Countdown");
+		appendAndResetTimeIncrement();
 		cancelTimer();
 		setStatusOff();
 	}
 
-	public void pause() {
-		cancelTimer();
-		setStatusPaused();
+	private void appendAndResetTimeIncrement() {
+		if (isAppendIncrementToTotal) {
+			Xlog.debug("Appending time : %d", timeCredit);
+			timeTotal += timeCredit;
+			setText(formatTime(timeTotal));
+		}
+		timeCredit = 0;
 	}
 
 	private void cancelTimer() {
@@ -90,16 +94,18 @@ public class CountDown extends TextView {
 	}
 
 	private void launchTimer() {
-		if (timeIncrement > 0) {
-			timeCredit = timeIncrement;
+		if (timeIncrement > 0)
 			launchPreTimer();
-		} else {
+		else
 			launchMainTimer();
-		}
 	}
 
 	private void launchPreTimer() {
-		timer = new CountDownTimer(timeIncrement, 1) {
+
+		if (timeCredit == 0)
+			timeCredit = timeIncrement;
+
+		timer = new CountDownTimer(timeCredit, INTERVAL_TIME) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
@@ -119,7 +125,7 @@ public class CountDown extends TextView {
 	protected void decrementPreTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
 		this.postInvalidate();
-		System.out.println(time + " : tick !!!!!");
+		Xlog.debug("Tick : %s", time);
 	}
 
 	protected void launchMainTimer() {
@@ -133,7 +139,8 @@ public class CountDown extends TextView {
 
 			@Override
 			public void onFinish() {
-				setText(formatTime(0L));
+				timeTotal = 0L;
+				decrementTimer(timeTotal);
 				listener.onFinish();
 			}
 		}.start();
@@ -142,7 +149,7 @@ public class CountDown extends TextView {
 	protected void decrementTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
 		setText(time);
-		System.out.println(time + " : tack !!!!!");
+		Xlog.debug("Tack : %s", time);
 	}
 
 	protected CharSequence formatTime(long millisUntilFinished) {
@@ -182,12 +189,12 @@ public class CountDown extends TextView {
 	protected void updateTextAttributes() {
 		switch (viewStatus) {
 			case ACTIVE:
-				setTextSize(35f);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Active));
 				setTextColor(Color.WHITE);
 				setShadowLayer(12, 0, 0, Color.WHITE);
 				break;
 			case INACTIVE:
-				setTextSize(25f);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Inactive));
 				setTextColor(Color.GRAY);
 				setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
@@ -199,33 +206,30 @@ public class CountDown extends TextView {
 		super.onDraw(canvas);
 	}
 
-	public void setTime(int time) {
-		timeTotal = milliSeconds(time);
+	public void setTime(long time) {
+		timeTotal = time;
+		baseTime = time;
 		setText(formatTime(timeTotal));
 	}
 
-	public int getTime() {
-		return seconds(timeTotal);
+	public long getTime() {
+		return timeTotal;
 	}
 
-	public int getTimeIncrement() {
-		return seconds(timeIncrement);
-	}
-
-	public void setTimeIncrement(int preTime) {
-		this.timeIncrement = milliSeconds(preTime);
+	public void setTimeIncrement(long timeIncrement) {
+		this.timeIncrement = timeIncrement;
 	}
 
 	public void setAppendTimeIncrement(boolean appendTimeIncrement) {
-		this.appendTimeIncrement = appendTimeIncrement;
+		this.isAppendIncrementToTotal = appendTimeIncrement;
 	}
 
-	private int seconds(long milliSeconds) {
-		return (int) (milliSeconds / 1000);
+	public long getTimeCredit() {
+		return timeCredit;
 	}
 
-	private long milliSeconds(int seconds) {
-		return seconds * 1000;
+	public void setTimeCredit(long timeCredit) {
+		this.timeCredit = timeCredit;
 	}
 
 }
