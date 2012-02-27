@@ -119,8 +119,8 @@ public class CountDown extends TextView {
 	}
 
 	protected void decrementPreTimer(long millisUntilFinished) {
-		String time = formatTime(millisUntilFinished).toString();
-		Xlog.debug("Tick : %s", time);
+		// String time = formatTime(millisUntilFinished).toString();
+		Xlog.debug("Tick : %s", millisUntilFinished);
 	}
 
 	protected void launchMainTimer() {
@@ -144,7 +144,7 @@ public class CountDown extends TextView {
 	protected void decrementTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
 		setText(time);
-		Xlog.debug("Tack : %s", time);
+		Xlog.debug("Tack : %s", millisUntilFinished);
 	}
 
 	protected CharSequence formatTime(long millisUntilFinished) {
