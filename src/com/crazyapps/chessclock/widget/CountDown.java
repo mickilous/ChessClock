@@ -13,8 +13,8 @@ import android.widget.TextView;
 public class CountDown extends TextView {
 
 	private long				timeTotal;
-	private long				timeIncrement;
-	private long				timeCredit;
+	protected long				timeIncrement;
+	protected long				timeCredit;
 	private boolean				appendTimeIncrement;
 	private CountDownTimer		timer;
 	private CountDownListener	listener;
@@ -49,6 +49,7 @@ public class CountDown extends TextView {
 	}
 
 	protected void initView() {
+
 		updateTextAttributes();
 	}
 
@@ -67,6 +68,7 @@ public class CountDown extends TextView {
 		if (appendTimeIncrement) {
 			System.out.println("Appending !!!!!!!!!!!!!!!!");
 			timeTotal += timeCredit;
+			timeCredit = 0;
 			setText(formatTime(timeTotal));
 		}
 	}
@@ -88,15 +90,16 @@ public class CountDown extends TextView {
 	}
 
 	private void launchTimer() {
-		if (timeIncrement > 0)
+		if (timeIncrement > 0) {
+			timeCredit = timeIncrement;
 			launchPreTimer();
-		else
+		} else {
 			launchMainTimer();
-
+		}
 	}
 
 	private void launchPreTimer() {
-		timer = new CountDownTimer(timeIncrement, INTERVAL_TIME) {
+		timer = new CountDownTimer(timeIncrement, 1) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
@@ -115,6 +118,7 @@ public class CountDown extends TextView {
 
 	protected void decrementPreTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
+		this.postInvalidate();
 		System.out.println(time + " : tick !!!!!");
 	}
 
@@ -183,7 +187,7 @@ public class CountDown extends TextView {
 				setShadowLayer(12, 0, 0, Color.WHITE);
 				break;
 			case INACTIVE:
-				setTextSize(25);
+				setTextSize(25f);
 				setTextColor(Color.GRAY);
 				setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
