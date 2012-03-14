@@ -124,7 +124,7 @@ public class CountDown extends TextView {
 
 	protected void decrementPreTimer(long millisUntilFinished) {
 		String time = formatTime(millisUntilFinished).toString();
-		// this.postInvalidate();
+		this.postInvalidate();
 		Xlog.debug("Tick : %s", time);
 	}
 
