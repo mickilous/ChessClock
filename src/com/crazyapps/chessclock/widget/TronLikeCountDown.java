@@ -30,7 +30,7 @@ public class TronLikeCountDown extends CountDown {
 	private float[]			gradientPositions;
 
 	private Paint			circlePaint;
-	private Paint			pgb;
+	private Paint			gradientPaint;
 	private Paint			timerPaint;
 
 	private Paint			pulsationPaint;
@@ -44,6 +44,8 @@ public class TronLikeCountDown extends CountDown {
 	private RectF			preTimerBox;
 
 	private RadialGradient	gradient;
+
+	private boolean			drawned	= false;
 
 	public TronLikeCountDown(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -87,7 +89,7 @@ public class TronLikeCountDown extends CountDown {
 		backgroundPaint = new Paint();
 		backgroundPaint.setARGB(120, 0, 0, 0);
 
-		pgb = new Paint();
+		gradientPaint = new Paint();
 
 		bonusText = new Paint();
 		bonusText.setTypeface(tf);
@@ -124,6 +126,7 @@ public class TronLikeCountDown extends CountDown {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+
 		// get the view size
 		int height = getMeasuredHeight();
 		int width = getMeasuredWidth();
@@ -139,46 +142,58 @@ public class TronLikeCountDown extends CountDown {
 
 		gradient = new RadialGradient(px, py, radius, getGradientColors(), gradientPositions, TileMode.CLAMP);
 
-		pgb.setShader(gradient);
+		gradientPaint.setShader(gradient);
 
-		outerRingPath.addOval(boundingBox, Direction.CW);
+		if (!drawned)
+			outerRingPath.addOval(boundingBox, Direction.CW);
 
-		canvas.drawPath(outerRingPath, pgb);
-
+		canvas.drawPath(outerRingPath, gradientPaint);
+		drawned = true;
 		radius = radius - radius / 4;
 		preTimerBox = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 
 		if (timeIncrement > 0 && timeCredit > 0) {
 			float angle = getAngle(timeIncrement, timeCredit);
-			canvas.drawArc(preTimerBox, -90 + angle / 2, angle, false, timerPaint);
+			canvas.drawArc(preTimerBox, 90 + angle / 2, angle, false, timerPaint);
 			bonusText.setColor(getAlphaBasedOnTime(Color.WHITE));
 			bonusText.setShadowLayer(12, 0, 0, getAlphaBasedOnTime(Color.CYAN));
-			canvas.drawText(getTimeWithSeparator(timeCredit), center.x, center.y + getTextSize() + 3, bonusText);
+			canvas.drawText(getTimeWithSeparator(timeCredit), center.x, center.y + bonusText.getTextSize(), bonusText);
 		} else {
 			if (viewStatus.equals(Status.ACTIVE)) {
 				canvas.drawArc(preTimerBox, 90 + getAngle(baseTime, timeTotal) / 2, getAngle(baseTime, timeTotal),
 						false, timerPaint);
+				bonusText.setColor(Color.WHITE);
+				bonusText.setShadowLayer(12, 0, 0, Color.CYAN);
+				canvas.drawText(getMsAsText(timeTotal % 1000), center.x + radius / 4,
+						center.y + bonusText.getTextSize(), bonusText);
 			}
 		}
 		canvas.save();
 	}
 
+	private String getMsAsText(long ms) {
+		if (ms < 10)
+			return ".00" + ms;
+		if (ms < 100)
+			return ".0" + ms;
+		return "." + String.valueOf(ms);
+	}
+
 	private String getTimeWithSeparator(long time) {
-		return (time / 1000) + "." + time % 1000;
+		if (time < 1000)
+			return "0" + getMsAsText(time);
+		return time / 1000 + "." + time % 1000;
 	}
 
-	private float getAngle(long a, long b) {
-		float fa = (float) a;
-		float fb = (float) b;
-		return -360 / (fa / fb);
+	private float getAngle(long baseTime, long runningTime) {
+		float fa = (float) baseTime;
+		float fb = (float) runningTime;
+		return 360 / (fa / fb);
 	}
 
-	private int getAlphaBasedOnTime(int c) {
-		int r = Color.red(c);
-		int g = Color.green(c);
-		int b = Color.blue(c);
-
-		return Color.argb((int) (((float) timeCredit / (float) timeIncrement) * (float) 255), r, g, b);
+	private int getAlphaBasedOnTime(int color) {
+		return Color.argb((int) (((float) timeCredit / (float) timeIncrement) * (float) 255), Color.red(color),
+				Color.green(color), Color.blue(color));
 	}
 
 	private int[] getGradientColors() {
