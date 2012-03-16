@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="timerTextSize_Active">25sp</dimen>
+    <dimen name="timerTextSize_Inactive">20sp</dimen>
+    <dimen name="incrementTimerTextSize">25sp</dimen>
+</resources>

@@ -233,6 +233,7 @@ public class ChessClockActivity extends Activity {
 				startActivityForResult(new Intent(this, PreferencesActivity.class), ACTIVITY_PREFS);
 				break;
 			case R.id.reset:
+				System.out.println("************************* RESET");
 				initializeCountDownsState();
 				break;
 			case R.id.about:

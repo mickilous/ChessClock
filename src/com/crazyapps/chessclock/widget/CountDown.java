@@ -10,13 +10,16 @@ import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.crazyapps.chessclock.R;
 import com.crazyapps.chessclock.util.Xlog;
 
 public class CountDown extends TextView {
 
-	private long				timeTotal;
-	private long				timeIncrement;
-	private long				timeCredit;
+	protected long				baseTime;
+	protected long				timeTotal;
+
+	protected long				timeIncrement;
+	protected long				timeCredit;
 	private boolean				isAppendIncrementToTotal;
 
 	private CountDownTimer		timer;
@@ -24,7 +27,7 @@ public class CountDown extends TextView {
 
 	protected Status			viewStatus		= Status.INACTIVE;
 
-	private final long			INTERVAL_TIME	= 1000;
+	private final long			INTERVAL_TIME	= 1;
 	private final NumberFormat	formatter		= new DecimalFormat("##00");
 
 	public enum Status {
@@ -98,6 +101,7 @@ public class CountDown extends TextView {
 	}
 
 	private void launchPreTimer() {
+
 		if (timeCredit == 0)
 			timeCredit = timeIncrement;
 
@@ -119,7 +123,7 @@ public class CountDown extends TextView {
 	}
 
 	protected void decrementPreTimer(long millisUntilFinished) {
-		// String time = formatTime(millisUntilFinished).toString();
+		postInvalidate();
 		Xlog.debug("Tick : %s", millisUntilFinished);
 	}
 
@@ -176,22 +180,20 @@ public class CountDown extends TextView {
 	}
 
 	protected void setStatusPaused() {
-		// if (viewStatus != Status.INACTIVE) {
 		viewStatus = Status.INACTIVE;
 		updateTextAttributes();
 		setClickable(true);
-		// }
 	}
 
 	protected void updateTextAttributes() {
 		switch (viewStatus) {
 			case ACTIVE:
-				setTextSize(35f);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Active));
 				setTextColor(Color.WHITE);
 				setShadowLayer(12, 0, 0, Color.WHITE);
 				break;
 			case INACTIVE:
-				setTextSize(25);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Inactive));
 				setTextColor(Color.GRAY);
 				setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
@@ -205,11 +207,16 @@ public class CountDown extends TextView {
 
 	public void setTime(long time) {
 		timeTotal = time;
+		baseTime = time;
 		setText(formatTime(timeTotal));
 	}
 
 	public long getTime() {
 		return timeTotal;
+	}
+
+	public long getTimeIncrement() {
+		return timeIncrement;
 	}
 
 	public void setTimeIncrement(long timeIncrement) {

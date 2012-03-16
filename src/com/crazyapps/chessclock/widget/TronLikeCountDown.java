@@ -17,17 +17,33 @@ import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.crazyapps.chessclock.R;
+
 /**
  * @author id0
  * 
  */
 public class TronLikeCountDown extends CountDown {
 
-	private int[]	activeGradientColors;
-	private int[]	inactiveGradientColors;
-	private float[]	gradientPositions;
+	private int[]			activeGradientColors;
+	private int[]			inactiveGradientColors;
+	private float[]			gradientPositions;
 
-	private Paint	circlePaint;
+	private Paint			circlePaint;
+	private Paint			pgb;
+	private Paint			timerPaint;
+
+	private Paint			pulsationPaint;
+
+	private Paint			backgroundPaint;
+	private Paint			bonusText;
+
+	private Path			outerRingPath;
+
+	private RectF			boundingBox;
+	private RectF			preTimerBox;
+
+	private RadialGradient	gradient;
 
 	public TronLikeCountDown(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -45,21 +61,41 @@ public class TronLikeCountDown extends CountDown {
 	}
 
 	@Override
-	protected void decrementPreTimer(long millisUntilFinished) {
-		super.decrementPreTimer(millisUntilFinished);
-		// TODO Implement progress bar inverted
-	}
-
-	@Override
 	protected void initView() {
 		setFocusable(true);
 		// Récupère les ressources externes
 		Resources r = this.getResources();
 
+		Typeface tf = Typeface.createFromAsset(r.getAssets(), "fonts/Neutronium.ttf");
+		this.setTypeface(tf);
+
 		circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		circlePaint.setColor(Color.BLACK);
 		circlePaint.setStrokeWidth(1);
 		circlePaint.setStyle(Paint.Style.STROKE);
+
+		timerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		timerPaint.setColor(Color.WHITE);
+		timerPaint.setStyle(Paint.Style.STROKE);
+		timerPaint.setStrokeWidth(2);
+
+		pulsationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		pulsationPaint.setColor(Color.WHITE);
+		pulsationPaint.setStyle(Paint.Style.STROKE);
+		pulsationPaint.setStrokeWidth(4);
+
+		backgroundPaint = new Paint();
+		backgroundPaint.setARGB(120, 0, 0, 0);
+
+		pgb = new Paint();
+
+		bonusText = new Paint();
+		bonusText.setTypeface(tf);
+		bonusText.setTextSize(getResources().getDimensionPixelSize(R.dimen.incrementTimerTextSize));
+		bonusText.setColor(Color.WHITE);
+		bonusText.setShadowLayer(12, 0, 0, Color.CYAN);
+
+		outerRingPath = new Path();
 
 		// create the tronlike gradient
 		activeGradientColors = new int[4];
@@ -81,9 +117,6 @@ public class TronLikeCountDown extends CountDown {
 		gradientPositions[1] = 1 - 0.15f;
 		gradientPositions[0] = 1 - 0.3f;
 
-		Typeface tf = Typeface.createFromAsset(r.getAssets(), "fonts/Neutronium.ttf");
-		this.setTypeface(tf);
-
 		setText("00:00:00");
 		updateTextAttributes();
 	}
@@ -102,22 +135,50 @@ public class TronLikeCountDown extends CountDown {
 
 		int radius = Math.min(px, py) - 2;
 
-		RectF boundingBox = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
+		boundingBox = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 
-		RadialGradient activeGradient = new RadialGradient(px, py, radius, getGradientColors(), gradientPositions,
-				TileMode.CLAMP);
+		gradient = new RadialGradient(px, py, radius, getGradientColors(), gradientPositions, TileMode.CLAMP);
 
-		Paint pgb = new Paint();
-		pgb.setShader(activeGradient);
+		pgb.setShader(gradient);
 
-		Path outerRingPath = new Path();
 		outerRingPath.addOval(boundingBox, Direction.CW);
 
 		canvas.drawPath(outerRingPath, pgb);
 
-		canvas.restore();
+		radius = radius - radius / 4;
+		preTimerBox = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 
+		if (timeIncrement > 0 && timeCredit > 0) {
+			float angle = getAngle(timeIncrement, timeCredit);
+			canvas.drawArc(preTimerBox, -90 + angle / 2, angle, false, timerPaint);
+			bonusText.setColor(getAlphaBasedOnTime(Color.WHITE));
+			bonusText.setShadowLayer(12, 0, 0, getAlphaBasedOnTime(Color.CYAN));
+			canvas.drawText(getTimeWithSeparator(timeCredit), center.x, center.y + getTextSize() + 3, bonusText);
+		} else {
+			if (viewStatus.equals(Status.ACTIVE)) {
+				canvas.drawArc(preTimerBox, 90 + getAngle(baseTime, timeTotal) / 2, getAngle(baseTime, timeTotal),
+						false, timerPaint);
+			}
+		}
 		canvas.save();
+	}
+
+	private String getTimeWithSeparator(long time) {
+		return (time / 1000) + "." + time % 1000;
+	}
+
+	private float getAngle(long a, long b) {
+		float fa = (float) a;
+		float fb = (float) b;
+		return -360 / (fa / fb);
+	}
+
+	private int getAlphaBasedOnTime(int c) {
+		int r = Color.red(c);
+		int g = Color.green(c);
+		int b = Color.blue(c);
+
+		return Color.argb((int) (((float) timeCredit / (float) timeIncrement) * (float) 255), r, g, b);
 	}
 
 	private int[] getGradientColors() {
@@ -130,12 +191,12 @@ public class TronLikeCountDown extends CountDown {
 	protected void updateTextAttributes() {
 		switch (this.viewStatus) {
 			case ACTIVE:
-				setTextSize(35f);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Active));
 				setTextColor(Color.WHITE);
 				setShadowLayer(12, 0, 0, Color.CYAN);
 				break;
 			case INACTIVE:
-				setTextSize(25);
+				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Inactive));
 				setTextColor(Color.GRAY);
 				setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
