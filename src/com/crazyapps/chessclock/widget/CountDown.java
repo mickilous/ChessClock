@@ -123,7 +123,6 @@ public class CountDown extends TextView {
 	}
 
 	protected void decrementPreTimer(long millisUntilFinished) {
-		postInvalidate();
 		Xlog.debug("Tick : %s", millisUntilFinished);
 	}
 
@@ -155,7 +154,8 @@ public class CountDown extends TextView {
 		int h = (int) ((millisUntilFinished / 1000) / 3600);
 		int m = (int) (((millisUntilFinished / 1000) / 60) % 60);
 		int s = (int) ((millisUntilFinished / 1000) % 60);
-		return String.format("%s:%s:%s", formatter.format(h), formatter.format(m), formatter.format(s));
+		return formatter.format(h) + ":" + formatter.format(m) + ":" + formatter.format(s);
+		// return String.format("%s:%s:%s", formatter.format(h), formatter.format(m), formatter.format(s));
 	}
 
 	public void setCountDownListener(CountDownListener listener) {
