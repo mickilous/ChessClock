@@ -5,19 +5,21 @@
     android:background="@drawable/background"
     android:gravity="center"
     android:orientation="vertical" >
-
-    <com.crazyapps.chessclock.widget.TronLikeReversedCountDown
+    		
+	<com.crazyapps.chessclock.widget.TronLikeReversedCountDown
         android:id="@+id/countdown2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center" />
 
+
+	
     <com.crazyapps.chessclock.widget.TronLikeCountDown
         android:id="@+id/countdown1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center" />
 
 </LinearLayout>

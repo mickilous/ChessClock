@@ -26,7 +26,7 @@ public class TronLikeReversedCountDown extends TronLikeCountDown {
 
 	public void onDraw(Canvas canvas) {
 		canvas.save();
-		canvas.rotate(180.0F, (getLeft() + getRight()) / 2.0F, (getTop() + getBottom()) / 2.0F);
+		canvas.rotate(180.0F, getMeasuredWidth() / 2.0F, getMeasuredHeight() / 2.0F);
 		super.onDraw(canvas);
 		canvas.restore();
 	}

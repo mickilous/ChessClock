@@ -25,6 +25,7 @@ import com.crazyapps.chessclock.R;
  */
 public class TronLikeCountDown extends CountDown {
 
+	private Resources		r		= null;
 	private int[]			activeGradientColors;
 	private int[]			inactiveGradientColors;
 	private float[]			gradientPositions;
@@ -65,11 +66,13 @@ public class TronLikeCountDown extends CountDown {
 	@Override
 	protected void initView() {
 		setFocusable(true);
-		// Récupère les ressources externes
-		Resources r = this.getResources();
+
+		if (r == null)
+			r = this.getResources();
 
 		Typeface tf = Typeface.createFromAsset(r.getAssets(), "fonts/Neutronium.ttf");
-		this.setTypeface(tf);
+		timerView.setTypeface(tf);
+		incrementTimerView.setTypeface(tf);
 
 		circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		circlePaint.setColor(Color.BLACK);
@@ -92,8 +95,8 @@ public class TronLikeCountDown extends CountDown {
 		gradientPaint = new Paint();
 
 		bonusText = new Paint();
-		bonusText.setTypeface(tf);
-		bonusText.setTextSize(getResources().getDimensionPixelSize(R.dimen.incrementTimerTextSize));
+		// bonusText.setTypeface(tf);
+		bonusText.setTextSize(r.getDimension(R.dimen.incrementTimerTextSize));
 		bonusText.setColor(Color.WHITE);
 		bonusText.setShadowLayer(12, 0, 0, Color.CYAN);
 
@@ -119,14 +122,12 @@ public class TronLikeCountDown extends CountDown {
 		gradientPositions[1] = 1 - 0.15f;
 		gradientPositions[0] = 1 - 0.3f;
 
-		setText("00:00:00");
-		updateTextAttributes();
+		// setText("00:00:00");
+		// updateTextAttributes();
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-
 		// get the view size
 		int height = getMeasuredHeight();
 		int width = getMeasuredWidth();
@@ -152,37 +153,25 @@ public class TronLikeCountDown extends CountDown {
 		radius = radius - radius / 4;
 		preTimerBox = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 
+		// draw the preTimer circle
 		if (timeIncrement > 0 && timeCredit > 0) {
 			float angle = getAngle(timeIncrement, timeCredit);
 			canvas.drawArc(preTimerBox, 90 + angle / 2, angle, false, timerPaint);
 			bonusText.setColor(getAlphaBasedOnTime(Color.WHITE));
 			bonusText.setShadowLayer(12, 0, 0, getAlphaBasedOnTime(Color.CYAN));
-			canvas.drawText(getTimeWithSeparator(timeCredit), center.x, center.y + bonusText.getTextSize(), bonusText);
-		} else {
+			// canvas.drawText(getTimeWithSeparator(timeCredit), center.x + radius / 10,
+			// center.y + bonusText.getTextSize(), bonusText);
+		} else { // draw the timer circle
 			if (viewStatus.equals(Status.ACTIVE)) {
 				canvas.drawArc(preTimerBox, 90 + getAngle(baseTime, timeTotal) / 2, getAngle(baseTime, timeTotal),
 						false, timerPaint);
 				bonusText.setColor(Color.WHITE);
 				bonusText.setShadowLayer(12, 0, 0, Color.CYAN);
-				canvas.drawText(getMsAsText(timeTotal % 1000), center.x + radius / 4,
-						center.y + bonusText.getTextSize(), bonusText);
+				// canvas.drawText(getMsAsText(timeTotal % 1000), center.x + radius / 4,
+				// center.y + bonusText.getTextSize(), bonusText);
 			}
 		}
 		canvas.save();
-	}
-
-	private String getMsAsText(long ms) {
-		if (ms < 10)
-			return ".00" + ms;
-		if (ms < 100)
-			return ".0" + ms;
-		return "." + String.valueOf(ms);
-	}
-
-	private String getTimeWithSeparator(long time) {
-		if (time < 1000)
-			return "0" + getMsAsText(time);
-		return time / 1000 + "." + time % 1000;
 	}
 
 	private float getAngle(long baseTime, long runningTime) {
@@ -206,14 +195,17 @@ public class TronLikeCountDown extends CountDown {
 	protected void updateTextAttributes() {
 		switch (this.viewStatus) {
 			case ACTIVE:
-				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Active));
-				setTextColor(Color.WHITE);
-				setShadowLayer(12, 0, 0, Color.CYAN);
+				timerView.setTextSize(r.getDimension(R.dimen.timerTextSize_Active));
+				timerView.setTextColor(Color.WHITE);
+				timerView.setShadowLayer(12, 0, 0, Color.CYAN);
+				incrementTimerView.setTextSize(getResources().getDimensionPixelSize(R.dimen.incrementTimerTextSize));
+				incrementTimerView.setTextColor(Color.WHITE);
+				incrementTimerView.setShadowLayer(12, 0, 0, Color.CYAN);
 				break;
 			case INACTIVE:
-				setTextSize(getResources().getDimensionPixelSize(R.dimen.timerTextSize_Inactive));
-				setTextColor(Color.GRAY);
-				setShadowLayer(12, 0, 0, Color.GRAY);
+				timerView.setTextSize(r.getDimension(R.dimen.timerTextSize_Inactive));
+				timerView.setTextColor(Color.GRAY);
+				timerView.setShadowLayer(12, 0, 0, Color.GRAY);
 				break;
 		}
 	}
