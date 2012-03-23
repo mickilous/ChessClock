@@ -262,6 +262,10 @@ public class CountDown extends RelativeLayout {
 		return timeTotal;
 	}
 
+	public long getTimeIncrement() {
+		return timeIncrement;
+	}
+
 	public void setTimeIncrement(long timeIncrement) {
 		this.timeIncrement = timeIncrement;
 	}
