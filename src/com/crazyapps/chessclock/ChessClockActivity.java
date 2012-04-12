@@ -237,7 +237,7 @@ public class ChessClockActivity extends Activity {
 				initializeCountDownsState();
 				break;
 			case R.id.about:
-				toast("www.crazy-apps.com");
+				startActivity(new Intent(this, AboutActivity.class));
 				break;
 			case R.id.exit:
 				finish();

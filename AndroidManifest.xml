@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.crazyapps.chessclock.PreferencesActivity" />
-    </application>
+        <activity android:name="com.crazyapps.chessclock.PreferencesActivity" android:label="@string/settings" />
+        <activity android:name="com.crazyapps.chessclock.AboutActivity" android:label="@string/about_title" />
+        </application>
 
 </manifest>
