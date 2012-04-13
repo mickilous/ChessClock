@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Main Strings -->
-    <string name="hello">Hello World, ChessClockActivity!</string>
+    <!-- Main label -->
     <string name="app_name">ChessClock</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
