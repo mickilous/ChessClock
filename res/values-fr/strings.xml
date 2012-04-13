@@ -3,8 +3,6 @@
 
     <!-- Main label -->
     <string name="app_name">ChessClock</string>
-    <string name="start">Démarrer</string>
-    <string name="stop">Stop</string>
     <string name="settings">Paramètres</string>
     <string name="reset">Réinitialiser</string>
     <string name="about">A propos</string>
@@ -16,7 +14,7 @@
     <string name="pref_tab_times">Temps</string>
     <string name="pref_tab_sounds">Sons</string>
     <string name="pref_tab_modes">Modes</string>
-        <string name="pref_time_equals">Temps similaire pour le joueur 2</string>
+	<string name="pref_time_equals">Temps similaire pour le joueur 2</string>
     <string name="pref_mode_label">Choisir le mode de jeu</string>
 
     <string-array name="pref_mode_entries">
