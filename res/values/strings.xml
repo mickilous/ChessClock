@@ -2,7 +2,6 @@
 <resources>
 
     <!-- Main label -->
-    <string name="hello">Hello World, ChessClockActivity!</string>
     <string name="app_name">ChessClock</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>

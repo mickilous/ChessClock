@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Main label -->
+    <string name="app_name">ChessClock</string>
+    <string name="start">Démarrer</string>
+    <string name="stop">Stop</string>
+    <string name="settings">Paramètres</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="about">A propos</string>
+    <string name="exit">Quitter</string>
+    <string name="done">Appliquer</string>
+    <string name="pause">Pause</string>
+
+    <!-- Preferences Label -->
+    <string name="pref_tab_times">Temps</string>
+    <string name="pref_tab_sounds">Sons</string>
+    <string name="pref_tab_modes">Modes</string>
+        <string name="pref_time_equals">Temps similaire pour le joueur 2</string>
+    <string name="pref_mode_label">Choisir le mode de jeu</string>
+
+    <string-array name="pref_mode_entries">
+        <item>Mort subite</item>
+        <item>Fisher</item>
+        <item>Bronstein</item>
+    </string-array>
+
+    <string name="pref_sound_onclick">Emettre un son lors du clic</string>
+    <string name="pref_vibrate_onclick">Vibrer lors du clic</string>
+    <string name="pref_sound_ongameover">Emettre un son en fin de jeu</string>
+    <string name="pref_vibrate_ongameover">Vibrer en fin de jeu</string>
+
+</resources>
