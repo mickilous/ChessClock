@@ -28,4 +28,7 @@
     <string name="pref_sound_ongameover">Emettre un son en fin de jeu</string>
     <string name="pref_vibrate_ongameover">Vibrer en fin de jeu</string>
 
+    <!-- About Strings -->
+    <string name="about_title">A propos de Crazy Chessclock</string>
+    <string name="about_url">www.crazy-apps.com</string>
 </resources>

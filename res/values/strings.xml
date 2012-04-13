@@ -10,11 +10,11 @@
     <string name="done">Done</string>
     <string name="pause">Pause</string>
 
-    <!-- Preferences Label -->
+    <!-- Preferences Strings -->
     <string name="pref_tab_times">Times</string>
     <string name="pref_tab_sounds">Sounds</string>
     <string name="pref_tab_modes">Modes</string>
-	<string name="pref_time_equals">Player 2 has same time</string>
+    <string name="pref_time_equals">Player 2 has same time</string>
     <string name="pref_mode_label">Choose a Mode</string>
 
     <string-array name="pref_mode_entries">
@@ -27,5 +27,10 @@
     <string name="pref_vibrate_onclick">Vibrate On Click</string>
     <string name="pref_sound_ongameover">Sound On Game Over</string>
     <string name="pref_vibrate_ongameover">Vibrate On Game Over</string>
+
+    <!-- About Strings -->
+    <string name="about_title">About Crazy Chessclock</string>
+    <string name="about_url">www.crazy-apps.com</string>
+    
 
 </resources>
