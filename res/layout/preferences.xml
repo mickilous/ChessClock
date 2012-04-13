@@ -7,7 +7,8 @@
     <TabHost
         android:id="@+id/pref_tab_host"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent" 
+        android:layout_weight="0.8" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -35,28 +36,24 @@
                     <com.crazyapps.chessclock.widget.TimePicker
                         android:id="@+id/pref_time_p1"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
 
                     <CheckBox
                         android:id="@+id/pref_time_equals"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:layout_gravity="center"
                         android:text="@string/pref_time_equals" />
 
                     <com.crazyapps.chessclock.widget.TimePicker
                         android:id="@+id/pref_time_p2"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="invisible" />
+                        android:visibility="gone"
+                        android:gravity="center" />
 
-
-                    <Button
-                        android:id="@+id/pref_time_done"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:text="@string/done" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -118,5 +115,12 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+
+                    <Button
+                        android:id="@+id/pref_time_done"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:text="@string/done" />
 
 </LinearLayout>

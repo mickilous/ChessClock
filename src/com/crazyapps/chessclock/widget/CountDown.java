@@ -104,7 +104,7 @@ public class CountDown extends RelativeLayout {
 		if (isAppendIncrementToTotal) {
 			Xlog.debug("Appending time : %d", timeCredit);
 			timeTotal += timeCredit;
-			this.postInvalidate();
+			// this.postInvalidate();
 			refreshTimer();
 		}
 		timeCredit = 0;
@@ -143,7 +143,7 @@ public class CountDown extends RelativeLayout {
 	}
 
 	protected void decrementPreTimer(long millisUntilFinished) {
-		this.postInvalidate();
+		// this.postInvalidate();
 		refreshTimer();
 		Xlog.debug("Tick : %s", formatTime(millisUntilFinished).toString());
 	}
@@ -166,7 +166,7 @@ public class CountDown extends RelativeLayout {
 	}
 
 	protected void decrementTimer(long millisUntilFinished) {
-		this.postInvalidate();
+		// this.postInvalidate();
 		refreshTimer();
 		Xlog.debug("Tack : %s", formatTime(millisUntilFinished).toString());
 	}
@@ -176,7 +176,6 @@ public class CountDown extends RelativeLayout {
 		int m = (int) (((millisUntilFinished / 1000) / 60) % 60);
 		int s = (int) ((millisUntilFinished / 1000) % 60);
 		return formatter.format(h) + ":" + formatter.format(m) + ":" + formatter.format(s);
-		// return String.format("%s:%s:%s", formatter.format(h), formatter.format(m), formatter.format(s));
 	}
 
 	public void setCountDownListener(CountDownListener listener) {
@@ -189,6 +188,7 @@ public class CountDown extends RelativeLayout {
 	}
 
 	private void refreshTimer() {
+		this.postInvalidate();
 		timerView.setText(formatTime(timeTotal));
 		incrementTimerView.setText((timeCredit > 0) ? getMsWithSeparator(timeCredit) : getMsAsText(timeTotal % 1000));
 	}
@@ -240,11 +240,12 @@ public class CountDown extends RelativeLayout {
 	public void setTime(long time) {
 		timeTotal = time;
 		baseTime = time;
-		this.postInvalidate();
 		refreshTimer();
 	}
 
 	private String getMsAsText(long ms) {
+		if (ms == 0)
+			return ".000";
 		if (ms < 10)
 			return ".00" + ms;
 		if (ms < 100)
@@ -253,9 +254,7 @@ public class CountDown extends RelativeLayout {
 	}
 
 	private String getMsWithSeparator(long time) {
-		if (time < 1000)
-			return "0" + getMsAsText(time);
-		return time / 1000 + "." + time % 1000;
+		return time / 1000 + getMsAsText(time % 1000);
 	}
 
 	public long getTime() {
