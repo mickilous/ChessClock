@@ -4,11 +4,15 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    
+    
+    
+    
     <TabHost
         android:id="@+id/pref_tab_host"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
-        android:layout_weight="0.8" >
+        android:layout_weight="0.8">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -20,107 +24,114 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
             </TabWidget>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <LinearLayout
-                    android:id="@+id/pref_tab_1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    android:scrollbars="vertical" >
-
-                    <com.crazyapps.chessclock.widget.TimePicker
-                        android:id="@+id/pref_time_p1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center" />
-
-                    <CheckBox
-                        android:id="@+id/pref_time_equals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:layout_gravity="center"
-                        android:text="@string/pref_time_equals" />
-
-                    <com.crazyapps.chessclock.widget.TimePicker
-                        android:id="@+id/pref_time_p2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/pref_tab_2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    android:scrollbars="vertical" >
-
-                    <CheckBox
-                        android:id="@+id/pref_sound_onclick"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/pref_sound_onclick" />
-
-                    <CheckBox
-                        android:id="@+id/pref_vibrate_onclick"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/pref_vibrate_onclick" />
-
-                    <CheckBox
-                        android:id="@+id/pref_sound_ongameover"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/pref_sound_ongameover" />
-
-                    <CheckBox
-                        android:id="@+id/pref_vibrate_ongameover"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/pref_vibrate_ongameover" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/pref_tab_3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    android:scrollbars="vertical" >
-                    <Spinner
-                        android:id="@+id/pref_time_mode"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/pref_mode_entries"
-                        android:prompt="@string/pref_mode_label" />
-                    
-                    <com.crazyapps.chessclock.widget.NumberPicker
-                        android:id="@+id/pref_mode_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    
-                    
-                </LinearLayout>
-            </FrameLayout>
+            
+            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+		        android:layout_width="fill_parent" 
+		        android:layout_height="fill_parent" 
+		        android:isScrollContainer="true" 
+		        android:scrollbarAlwaysDrawVerticalTrack="true" 
+		        android:scrollbarStyle="outsideInset" 
+		        android:scrollbars="vertical">
+                                
+	            <FrameLayout
+	                android:id="@android:id/tabcontent"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent" >
+	
+	                <LinearLayout
+	                    android:id="@+id/pref_tab_1"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:orientation="vertical">
+	
+	                    <com.crazyapps.chessclock.widget.TimePicker
+	                        android:id="@+id/pref_time_p1"
+	                        android:layout_width="fill_parent"
+	                        android:layout_height="wrap_content"
+	                        android:gravity="center" />
+	
+	                    <CheckBox
+	                        android:id="@+id/pref_time_equals"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:checked="true"
+	                        android:layout_gravity="center"
+	                        android:text="@string/pref_time_equals" />
+	
+	                    <com.crazyapps.chessclock.widget.TimePicker
+	                        android:id="@+id/pref_time_p2"
+	                        android:layout_width="fill_parent"
+	                        android:layout_height="wrap_content"
+	                        android:visibility="gone"
+	                        android:gravity="center" />
+	
+	                </LinearLayout>
+	
+	                <LinearLayout
+	                    android:id="@+id/pref_tab_2"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:orientation="vertical">
+	
+	                    <CheckBox
+	                        android:id="@+id/pref_sound_onclick"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:checked="true"
+	                        android:text="@string/pref_sound_onclick" />
+	
+	                    <CheckBox
+	                        android:id="@+id/pref_vibrate_onclick"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:checked="true"
+	                        android:text="@string/pref_vibrate_onclick" />
+	
+	                    <CheckBox
+	                        android:id="@+id/pref_sound_ongameover"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:checked="true"
+	                        android:text="@string/pref_sound_ongameover" />
+	
+	                    <CheckBox
+	                        android:id="@+id/pref_vibrate_ongameover"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:checked="true"
+	                        android:text="@string/pref_vibrate_ongameover" />
+	                </LinearLayout>
+	
+	                <LinearLayout
+	                    android:id="@+id/pref_tab_3"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:orientation="vertical">
+	                    
+	                    <Spinner
+	                        android:id="@+id/pref_time_mode"
+	                        android:layout_width="fill_parent"
+	                        android:layout_height="wrap_content"
+	                        android:entries="@array/pref_mode_entries"
+	                        android:prompt="@string/pref_mode_label" />
+	                    
+	                    <com.crazyapps.chessclock.widget.NumberPicker
+	                        android:id="@+id/pref_mode_time"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content" />
+	                    
+	                </LinearLayout>
+	                    
+	            </FrameLayout>
+            </ScrollView>
         </LinearLayout>
     </TabHost>
 
-                    <Button
-                        android:id="@+id/pref_time_done"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:text="@string/done" />
+    <Button
+        android:id="@+id/pref_time_done"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/done" />
 
 </LinearLayout>

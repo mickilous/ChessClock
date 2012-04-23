@@ -132,6 +132,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 		mText.setOnFocusChangeListener(this);
 		mText.setFilters(new InputFilter[] { inputFilter });
 		mText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+		mText.setFocusable(false);
 
 		if (!isEnabled()) {
 			setEnabled(false);
@@ -206,8 +207,8 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 
 	public void onClick(View v) {
 		validateInput(mText);
-		if (!mText.hasFocus())
-			mText.requestFocus();
+		// if (!mText.hasFocus())
+		// mText.requestFocus();
 
 		// now perform the increment/decrement
 		if (R.id.increment == v.getId()) {

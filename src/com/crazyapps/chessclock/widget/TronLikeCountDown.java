@@ -121,9 +121,6 @@ public class TronLikeCountDown extends CountDown {
 		gradientPositions[2] = 1 - 0.1f;
 		gradientPositions[1] = 1 - 0.15f;
 		gradientPositions[0] = 1 - 0.3f;
-
-		// setText("00:00:00");
-		// updateTextAttributes();
 	}
 
 	@Override
@@ -159,16 +156,13 @@ public class TronLikeCountDown extends CountDown {
 			canvas.drawArc(preTimerBox, 90 + angle / 2, angle, false, timerPaint);
 			bonusText.setColor(getAlphaBasedOnTime(Color.WHITE));
 			bonusText.setShadowLayer(12, 0, 0, getAlphaBasedOnTime(Color.CYAN));
-			// canvas.drawText(getTimeWithSeparator(timeCredit), center.x + radius / 10,
-			// center.y + bonusText.getTextSize(), bonusText);
+
 		} else { // draw the timer circle
 			if (viewStatus.equals(Status.ACTIVE)) {
 				canvas.drawArc(preTimerBox, 90 + getAngle(baseTime, timeTotal) / 2, getAngle(baseTime, timeTotal),
 						false, timerPaint);
 				bonusText.setColor(Color.WHITE);
 				bonusText.setShadowLayer(12, 0, 0, Color.CYAN);
-				// canvas.drawText(getMsAsText(timeTotal % 1000), center.x + radius / 4,
-				// center.y + bonusText.getTextSize(), bonusText);
 			}
 		}
 		canvas.save();
