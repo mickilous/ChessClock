@@ -9,6 +9,7 @@
     <string name="exit">Exit</string>
     <string name="done">Done</string>
     <string name="pause">Pause</string>
+    <string name="seconds">Second(s)</string>
 
     <!-- Preferences Strings -->
     <string name="pref_tab_times">Times</string>

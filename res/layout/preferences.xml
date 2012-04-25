@@ -115,10 +115,26 @@
 	                        android:entries="@array/pref_mode_entries"
 	                        android:prompt="@string/pref_mode_label" />
 	                    
-	                    <com.crazyapps.chessclock.widget.NumberPicker
-	                        android:id="@+id/pref_mode_time"
+	                    <TableLayout
+	                        android:id="@+id/tl"
 	                        android:layout_width="wrap_content"
-	                        android:layout_height="wrap_content" />
+	                        android:layout_height="wrap_content" >
+	                        
+	                         <TableRow>
+			                    <com.crazyapps.chessclock.widget.NumberPicker
+			                        android:id="@+id/pref_mode_time"
+			                        android:layout_width="wrap_content"
+			                        android:layout_height="wrap_content" />
+			                    
+			                    <TextView
+			                        android:id="@+id/tab"
+							        android:layout_width="wrap_content"
+							        android:layout_height="fill_parent"
+							        android:gravity="center_vertical|center_horizontal"
+							        android:text="@string/seconds"
+							        android:textSize="30dp" />
+	                    	</TableRow>
+	                    </TableLayout>
 	                    
 	                </LinearLayout>
 	                    
